@@ -1,0 +1,65 @@
+{
+  "intents": [
+    {
+      "tag": "register_complaint",
+      "patterns": [
+        "The projector in my classroom isn't working",
+        "The AC in classroom 204 is not working, it's very hot",
+        "The Wi-Fi in the library is not working",
+        "I want to report a problem with the hostel water supply",
+        "There is a water leakage in washroom on the 3rd floor",
+        "The fan in lab 2 is making weird noises and stopped",
+        "The lights in room 305 are flickering and went off",
+        "Streetlight outside hostel block B is broken",
+        "The tap in the 2nd floor bathroom is leaking badly",
+        "Desks in classroom 102 are broken",
+        "The lab computer in seat 14 has a black screen"
+      ],
+      "entities_example": {
+        "category": "Maintenance | IT/Network | Hostel | Sanitation",
+        "location": "Classroom 204 | Library | Hostel Block B | Lab 2",
+        "issue": "AC not working | Projector broken | Water leakage",
+        "priority": "Low | Medium | High | Urgent"
+      }
+    },
+    {
+      "tag": "check_status",
+      "patterns": [
+        "What is the status of my complaint CV1024?",
+        "Has anyone fixed ticket CV1012 yet?",
+        "Check status of my AC repair request",
+        "Track complaint CV1030",
+        "Is my Wi-Fi complaint resolved?"
+      ],
+      "entities_example": {
+        "ticket_id": "CV1024"
+      }
+    },
+    {
+      "tag": "campus_inquiry",
+      "patterns": [
+        "Where is the examination department?",
+        "When is the last date for examination form submission?",
+        "What are the library hours today?",
+        "Where can I find the accounts section?",
+        "Who is the hostel warden for block A?",
+        "How do I apply for a duplicate ID card?"
+      ],
+      "entities_example": {
+        "query_topic": "Examination | Library | Admin | Hostel"
+      }
+    },
+    {
+      "tag": "emergency",
+      "patterns": [
+        "There is a fire in the chemistry lab",
+        "Someone fainted in the cafeteria, call medical help",
+        "Emergency in hostel block C, electric short circuit",
+        "I need an ambulance immediately"
+      ],
+      "entities_example": {
+        "priority": "Critical"
+      }
+    }
+  ]
+}

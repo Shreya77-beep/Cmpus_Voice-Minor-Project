@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusVoice | University Administration Dashboard</title>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="background-color: var(--bg-subtle); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column;">
+
+  <!-- Admin Top Header (MedBrief Hospital Admin Style) -->
+  <header style="background-color: #0f172a; color: #ffffff; border-bottom: 1px solid #1e293b; padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 40; flex-wrap: wrap; gap: 14px;">
+    
+    <!-- Brand & Portal Name -->
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #ffffff; display: grid; place-items: center; font-size: 1.15rem; font-weight: 800; box-shadow: 0 2px 4px rgba(0,0,0,0.25);">
+        <i class="fa-solid fa-building-columns"></i>
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <strong style="font-size: 1.15rem; font-weight: 800; color: #f8fafc;">CampusVoice</strong>
+          <span style="font-size: 0.72rem; font-weight: 700; background: #7c3aed; color: #ffffff; padding: 2px 8px; border-radius: 6px;">Administration Desk</span>
+        </div>
+        <p style="margin: 2px 0 0 0; font-size: 0.76rem; color: #94a3b8;">Campus-wide Governance, Grievance Registry & Notice Board</p>
+      </div>
+    </div>
+
+    <!-- Right Controls -->
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="text-align: right;" class="hidden sm:block">
+        <strong style="display: block; font-size: 0.88rem; color: #f8fafc;" id="adminName">Dr. S. K. Verma</strong>
+        <span style="font-size: 0.72rem; color: #94a3b8;">Dean & Registrar</span>
+      </div>
+
+      <!-- Publish Circular Button -->
+      <button type="button" class="btn-primary btn-small" onclick="openPublishNoticeModal()" style="background-color: #0d9488;">
+        <i class="fa-solid fa-bullhorn"></i>
+        <span>Publish Circular</span>
+      </button>
+
+      <!-- CSV Export Button -->
+      <button type="button" class="btn-secondary btn-small" onclick="exportComplaintsCSV()" style="background: #1e293b; border-color: #334155; color: #ffffff !important;">
+        <i class="fa-solid fa-file-csv" style="color: #34d399;"></i>
+        <span>Export CSV</span>
+      </button>
+
+      <!-- Refresh Button -->
+      <button type="button" onclick="fetchDashboardData()" class="btn-secondary btn-small" style="background: #1e293b; border-color: #334155; color: #ffffff !important; padding: 7px 10px;" title="Refresh Registry">
+        <i class="fa-solid fa-rotate" style="color: #38bdf8;" id="refreshIcon"></i>
+      </button>
+
+      <!-- Sign Out -->
+      <button type="button" onclick="logout()" class="btn-danger-outline btn-small" style="background: rgba(220,38,38,0.15); border-color: #dc2626;">
+        <i class="fa-solid fa-power-off"></i>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main style="flex: 1; max-width: 1200px; width: 100%; margin: 24px auto; padding: 0 24px; display: flex; flex-direction: column; gap: 20px;">
+
+    <!-- Executive KPI Metrics Grid (5 Cards) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+      
+      <!-- Total Complaints -->
+      <div class="metric-card">
+        <div class="metric-icon-wrap metric-icon-teal">
+          <i class="fa-solid fa-list-check"></i>
+        </div>
+        <div class="metric-info">
+          <h4>Total Grievances</h4>
+          <h3 id="statTotal">--</h3>
+          <small>Campus-wide registry</small>
+        </div>
+      </div>
+
+      <!-- Pending Action -->
+      <div class="metric-card" style="border-left: 4px solid #f59e0b;">
+        <div class="metric-icon-wrap metric-icon-amber">
+          <i class="fa-solid fa-hourglass-half"></i>
+        </div>
+        <div class="metric-info">
+          <h4>Pending Triage</h4>
+          <h3 id="statPending" style="color: #d97706;">--</h3>
+          <small>Awaiting technician</small>
+        </div>
+      </div>
+
+      <!-- In Progress -->
+      <div class="metric-card" style="border-left: 4px solid #0284c7;">
+        <div class="metric-icon-wrap metric-icon-indigo">
+          <i class="fa-solid fa-wrench"></i>
+        </div>
+        <div class="metric-info">
+          <h4>In Progress</h4>
+          <h3 id="statInProgress" style="color: #0284c7;">--</h3>
+          <small>Under active repair</small>
+        </div>
+      </div>
+
+      <!-- Resolved -->
+      <div class="metric-card" style="border-left: 4px solid #16a34a;">
+        <div class="metric-icon-wrap metric-icon-emerald">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="metric-info">
+          <h4>Resolved SLA</h4>
+          <h3 id="statResolved" style="color: #16a34a;">--</h3>
+          <small>Closed and verified</small>
+        </div>
+      </div>
+
+      <!-- High / Critical -->
+      <div class="metric-card" style="border-left: 4px solid #dc2626;">
+        <div class="metric-icon-wrap" style="background: #fee2e2; color: #dc2626;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="metric-info">
+          <h4>High / Critical</h4>
+          <h3 id="statHighPriority" style="color: #dc2626;">--</h3>
+          <small>Safety hazards</small>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Management Table Section (MedBrief Clean Registry) -->
+    <div class="clean-card" style="overflow: hidden;">
+      
+      <!-- Table Header & Filter Bar -->
+      <div style="padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; background: #ffffff;">
+        <div>
+          <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #0f172a;">Campus Grievance Registry & Audit Log</h3>
+          <p style="margin: 2px 0 0 0; color: #64748b; font-size: 0.8rem;">Global registry across IT, Hostel, Maintenance, Sanitation, and Academics</p>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="searchInput" placeholder="Search ticket or keyword..." style="padding: 7px 12px; font-size: 0.82rem; border: 1px solid #cbd5e1; border-radius: 8px; width: 180px;">
+          <select id="categoryFilter" style="padding: 7px 12px; font-size: 0.82rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+            <option value="All">All Categories</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="IT/Network">IT / Network</option>
+            <option value="Hostel">Hostel</option>
+            <option value="Sanitation">Sanitation</option>
+            <option value="Academic">Academic</option>
+          </select>
+          <select id="statusFilter" style="padding: 7px 12px; font-size: 0.82rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+            <option value="All">All Statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grievance Table -->
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.82rem;">
+          <thead>
+            <tr style="background: #fafbfc; border-bottom: 1px solid var(--border); color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.04em;">
+              <th style="padding: 12px 18px;">Ticket ID</th>
+              <th style="padding: 12px 18px;">Student</th>
+              <th style="padding: 12px 18px;">Category</th>
+              <th style="padding: 12px 18px;">Summary</th>
+              <th style="padding: 12px 18px;">Location</th>
+              <th style="padding: 12px 18px;">Urgency Score</th>
+              <th style="padding: 12px 18px;">Status</th>
+              <th style="padding: 12px 18px;">Technician</th>
+              <th style="padding: 12px 18px; text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="complaintsTableBody" style="divide-y: 1px solid var(--border);">
+            <tr>
+              <td colspan="9" style="padding: 40px; text-align: center; color: #94a3b8;">Loading campus grievances...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="padding: 12px 20px; background: #fafbfc; border-top: 1px solid var(--border); font-size: 0.76rem; color: #64748b; display: flex; justify-content: space-between; align-items: center;">
+        <span id="ticketCountLabel">Showing records</span>
+        <button type="button" onclick="seedDemoData()" class="btn-text" style="padding: 0; font-size: 0.76rem;">Re-Seed Sample Tickets</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Update Status & Dispatch Modal (MedBrief Universal Modal) -->
+  <div id="statusModal" class="medbrief-modal-overlay hidden" onclick="handleStatusModalBackdrop(event)">
+    <div class="medbrief-modal-card">
+      <div class="medbrief-modal-header">
+        <h3><i class="fa-solid fa-pen-to-square" style="color: #0d9488;"></i> Assign Technician & Update Status</h3>
+        <button type="button" class="medbrief-modal-close" onclick="closeModal()">&times;</button>
+      </div>
+
+      <div class="medbrief-modal-body">
+        <div class="modal-form">
+          <div>
+            <label>Ticket ID</label>
+            <input id="modalTicketId" type="text" readonly style="background: #f8fafc; font-family: var(--font-mono); font-weight: 800; color: #0d9488;">
+          </div>
+
+          <div>
+            <label>Work Order Status</label>
+            <select id="modalStatusSelect" style="font-weight: 600;">
+              <option value="Pending">Pending Review</option>
+              <option value="In Progress">In Progress (Dispatched)</option>
+              <option value="Resolved">Resolved (Work Completed)</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Assigned Technician Name *</label>
+            <input id="modalTechnicianInput" type="text" placeholder="e.g. Ramesh Chand (Audiovisual Cell)">
+          </div>
+
+          <div>
+            <label>Resolution & Inspection Notes</label>
+            <textarea id="modalNotesText" rows="3" placeholder="Enter findings or updates for the student..."></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary btn-small" onclick="closeModal()">Cancel</button>
+            <button type="button" class="btn-primary btn-small" onclick="submitStatusUpdate()">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Publish Official Circular Modal (MedBrief Universal Modal) -->
+  <div id="noticeModal" class="medbrief-modal-overlay hidden" onclick="handlePublishNoticeBackdrop(event)">
+    <div class="medbrief-modal-card">
+      <div class="medbrief-modal-header">
+        <h3><i class="fa-solid fa-bullhorn" style="color: #0d9488;"></i> Publish Official College Circular</h3>
+        <button type="button" class="medbrief-modal-close" onclick="closeNoticeModal()">&times;</button>
+      </div>
+
+      <div class="medbrief-modal-body">
+        <form id="publishNoticeForm" onsubmit="handlePublishNotice(event)" class="modal-form">
+          <div>
+            <label>Circular Title *</label>
+            <input id="noticeTitleInput" type="text" required placeholder="e.g. Mid-Term Examination Timetable Autumn 2026">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label>Category *</label>
+              <select id="noticeCatSelect" style="font-weight: 600;">
+                <option value="Exam">Examination</option>
+                <option value="Holiday">Holiday</option>
+                <option value="Placement">Placement</option>
+                <option value="Academic">Academic</option>
+                <option value="Event">Event</option>
+              </select>
+            </div>
+            <div>
+              <label>Deadline / Event Date</label>
+              <input id="noticeDeadlineInput" type="text" placeholder="e.g. 15th Next Month">
+            </div>
+          </div>
+
+          <div>
+            <label>Issuing Authority / Department</label>
+            <input id="noticeDeptInput" type="text" value="Registrar & Examination Cell">
+          </div>
+
+          <div>
+            <label>Official Announcement Content *</label>
+            <textarea id="noticeContentInput" required rows="4" placeholder="Enter full announcement details here..."></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary btn-small" onclick="closeNoticeModal()">Cancel</button>
+            <button type="submit" class="btn-primary btn-small">Publish Circular &rarr;</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const adminUser = requireAuth(['admin']);
+    if (adminUser) {
+      document.getElementById('adminName').innerText = adminUser.full_name;
+    }
+    function handleStatusModalBackdrop(e) {
+      if (e.target.id === 'statusModal') closeModal();
+    }
+    function handlePublishNoticeBackdrop(e) {
+      if (e.target.id === 'noticeModal') closeNoticeModal();
+    }
+  </script>
+</body>
+</html>

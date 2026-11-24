@@ -1,0 +1,32 @@
+[
+  {
+    "category": "Academic & Exams",
+    "question": "When is the last date for examination form submission?",
+    "answer": "The last date for regular examination form submission is the 15th of next month. Late submissions with a fine are accepted up to 5 days after the deadline.",
+    "keywords": ["exam", "form", "submission", "deadline", "last date", "examination"]
+  },
+  {
+    "category": "Campus Navigation",
+    "question": "Where is the examination department?",
+    "answer": "The Examination Department is located on the 2nd Floor of the Administrative Block (Room A-208), next to the Registrar's Office.",
+    "keywords": ["examination department", "exam cell", "where is", "location", "admin block"]
+  },
+  {
+    "category": "Library",
+    "question": "What are the library timings?",
+    "answer": "The central library is open Monday through Saturday from 8:00 AM to 8:00 PM. During exam weeks, the reading hall remains open until 11:00 PM.",
+    "keywords": ["library", "timings", "opening hours", "closing", "reading room"]
+  },
+  {
+    "category": "IT & Network",
+    "question": "How do I connect to campus Wi-Fi or reset my portal password?",
+    "answer": "Connect to 'Campus-Student' Wi-Fi using your roll number and campus portal password. If you need a password reset, visit the IT Helpdesk on the 1st Floor of the Computer Center.",
+    "keywords": ["wifi", "wi-fi", "internet", "password", "portal", "it helpdesk"]
+  },
+  {
+    "category": "Emergency & Healthcare",
+    "question": "Where is the campus medical dispensary or health center?",
+    "answer": "The Campus Health Center is located behind Hostel Block A. For emergencies, contact the campus ambulance at 011-2345678 or call the security control room.",
+    "keywords": ["medical", "doctor", "health center", "hospital", "emergency", "ambulance", "dispensary"]
+  }
+]
