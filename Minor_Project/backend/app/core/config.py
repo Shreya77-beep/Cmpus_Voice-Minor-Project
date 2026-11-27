@@ -12,7 +12,12 @@ class Settings:
     API_V1_PREFIX: str = "/api"
     
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    DATABASE_URL: str = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'campus_voice.db'}")
+    _raw_db_url: str = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'campus_voice.db'}").strip()
+    DATABASE_URL: str = (
+        _raw_db_url.replace("postgres://", "postgresql://", 1)
+        if _raw_db_url.startswith("postgres://")
+        else _raw_db_url
+    )
     
     FAQ_DATA_PATH: Path = BASE_DIR / "data" / "campus_faq.json"
     INTENTS_DATA_PATH: Path = BASE_DIR / "data" / "datasets" / "campus_intents.json"

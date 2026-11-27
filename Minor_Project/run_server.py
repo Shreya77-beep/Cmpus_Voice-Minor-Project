@@ -2,6 +2,7 @@
 CampusVoice Starter Script
 Runs the FastAPI server with auto-reload and serves both the API and Web UI.
 """
+import os
 import sys
 import webbrowser
 import time
@@ -22,21 +23,26 @@ def open_browser():
     webbrowser.open("http://127.0.0.1:8000")
 
 if __name__ == "__main__":
+    is_cloud = any(os.getenv(k) for k in ("PORT", "RAILWAY_ENVIRONMENT", "RENDER", "FLY_APP_NAME", "DYNO"))
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "8000"))
+
     print("=" * 60)
-    print("  🎙️  Starting CampusVoice: AI Campus Voice Assistant")
-    print("  🌐  Web App & UI: http://127.0.0.1:8000")
-    print("  📖  API Documentation: http://127.0.0.1:8000/docs")
+    print("  Starting CampusVoice: AI Campus Voice Assistant")
+    print(f"  Listening on http://{host}:{port}")
+    print(f"  API Documentation: http://127.0.0.1:{port}/docs")
     print("=" * 60)
 
-    # Launch browser automatically
-    threading.Thread(target=open_browser, daemon=True).start()
+    if not is_cloud and os.getenv("DISABLE_BROWSER", "").lower() not in ("1", "true"):
+        threading.Thread(target=open_browser, daemon=True).start()
 
-    # Start FastAPI / Uvicorn server on all interfaces (0.0.0.0) so mobile QR / LAN devices can connect
     uvicorn.run(
         "app.main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
+        host=host,
+        port=port,
+        reload=not is_cloud,
         reload_excludes=["*.db", "*.db-*", ".secret_key", "*.log"],
+        proxy_headers=True,
+        forwarded_allow_ips="*",
         app_dir=str(BACKEND_DIR),
     )

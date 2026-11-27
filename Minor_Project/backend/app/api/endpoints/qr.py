@@ -42,7 +42,13 @@ def get_portal_url(request: Request, override_url: Optional[str] = None) -> str:
 
     host_header = (request.headers.get("host") or "").strip()
     if host_header and not host_header.startswith(("127.0.0.1", "localhost", "0.0.0.0")):
-        scheme = request.headers.get("x-forwarded-proto") or request.url.scheme or "http"
+        fwd_proto = (request.headers.get("x-forwarded-proto") or "").split(",")[0].strip().lower()
+        if fwd_proto in ("http", "https"):
+            scheme = fwd_proto
+        elif any(host_header.split(":")[0].endswith(sfx) for sfx in (".onrender.com", ".up.railway.app", ".fly.dev", ".trycloudflare.com")):
+            scheme = "https"
+        else:
+            scheme = request.url.scheme or "http"
         return f"{scheme}://{host_header}/"
 
     host_ip = get_local_ip()

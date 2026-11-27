@@ -1,0 +1,10 @@
+.git
+.archify
+**/__pycache__
+**/*.pyc
+**/.env
+**/.secret_key
+**/*.db-wal
+**/*.db-shm
+**/*.db-journal
+*.bat
