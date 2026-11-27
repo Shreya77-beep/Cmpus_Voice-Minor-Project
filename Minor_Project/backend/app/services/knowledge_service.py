@@ -25,6 +25,20 @@ class KnowledgeService:
             return None
 
         query_lower = user_query.lower()
+        # Map common Hindi/Bengali inquiry terms to English keywords for FAQ matching
+        multilingual_aliases = {
+            "परीक्षा": " exam", "एग्जाम": " exam", "प्रकोष्ठ": " office", "समय": " timings",
+            "कहाँ": " where", "कहां": " where", "पुस्तकालय": " library", "लाइब्रेरी": " library",
+            "स्वास्थ्य": " medical health", "डिस्पेंसरी": " dispensary medical",
+            "हॉस्टल": " hostel", "वार्डन": " warden hostel", "वाई": " wifi", "इंटरनेट": " wifi",
+            "পরীক্ষা": " exam", "বিভাগ": " office", "সময়": " timings", "কোথায়": " where",
+            "গ্রন্থাগার": " library", "লাইব্রেরি": " library", "স্বাস্থ্য": " medical health",
+            "হোস্টেল": " hostel", "ওয়াই": " wifi", "ইন্টারনেট": " wifi"
+        }
+        for src, dst in multilingual_aliases.items():
+            if src in query_lower:
+                query_lower += dst
+
         best_match = None
         highest_score = 0
 

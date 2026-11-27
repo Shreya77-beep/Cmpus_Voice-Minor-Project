@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="landing-page-shell">
 
   <!-- Top Header Navigation (MedBrief Style) -->
@@ -17,22 +19,33 @@
       <div>
         <div style="display: flex; align-items: center; gap: 8px;">
           <span class="brand-title">CampusVoice</span>
-          <span style="font-size: 0.68rem; font-weight: 800; background: #f0fdfa; color: #0d9488; border: 1px solid #ccfbf1; padding: 2px 7px; border-radius: 6px; letter-spacing: 0.04em;">UNIVERSITY ERP</span>
+          <span
+            style="font-size: 0.68rem; font-weight: 800; background: #f0fdfa; color: #0d9488; border: 1px solid #ccfbf1; padding: 2px 7px; border-radius: 6px; letter-spacing: 0.04em;">UNIVERSITY
+            ERP</span>
         </div>
       </div>
     </div>
 
     <div class="landing-nav-actions">
+      <!-- Language Selector Pills -->
+      <div style="display: flex; background: #e2e8f0; border-radius: 8px; padding: 3px; flex-shrink: 0;">
+        <button type="button" onclick="setGatewayLanguage('en')" class="lang-btn" id="gw-lang-en" style="border: none; background: #ffffff; color: #0d9488; font-weight: 700; font-size: 0.74rem; padding: 4px 9px; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.06);">EN</button>
+        <button type="button" onclick="setGatewayLanguage('hi')" class="lang-btn" id="gw-lang-hi" style="border: none; background: transparent; color: #475569; font-weight: 600; font-size: 0.74rem; padding: 4px 9px; border-radius: 6px;">हिंदी</button>
+        <button type="button" onclick="setGatewayLanguage('bn')" class="lang-btn" id="gw-lang-bn" style="border: none; background: transparent; color: #475569; font-weight: 600; font-size: 0.74rem; padding: 4px 9px; border-radius: 6px;">বাংলা</button>
+      </div>
       <button type="button" class="nav-link-btn" onclick="openAuthModal('department')">
-        <i class="fa-solid fa-toolbox" style="margin-right: 6px; color: #0284c7;"></i>Department Operations
+        <i class="fa-solid fa-toolbox" style="margin-right: 6px; color: #0284c7;"></i><span
+          data-i18n="gw_dept_ops">Department Operations</span>
       </button>
       <button type="button" class="nav-link-btn" onclick="openAuthModal('admin')">
-        <i class="fa-solid fa-building-columns" style="margin-right: 6px; color: #7c3aed;"></i>University Administration
+        <i class="fa-solid fa-building-columns" style="margin-right: 6px; color: #7c3aed;"></i><span
+          data-i18n="gw_univ_admin">University Administration</span>
       </button>
       <button type="button" class="btn-secondary btn-small" onclick="openQrModal()">
-        <i class="fa-solid fa-qrcode" style="color: #0d9488;"></i>Campus QR Standee
+        <i class="fa-solid fa-qrcode" style="color: #0d9488;"></i><span data-i18n="gw_qr_standee">Campus QR Standee</span>
       </button>
-      <button type="button" class="btn-primary btn-small" onclick="openAuthModal('student')">
+      <button type="button" class="btn-primary btn-small" onclick="openAuthModal('student')"
+        data-i18n="gw_student_signin">
         Student Sign In →
       </button>
     </div>
@@ -41,39 +54,42 @@
   <!-- Hero Section (MedBrief Grid: 1.2fr : 0.8fr) -->
   <section class="landing-hero-section">
     <div class="hero-text-content">
-      <p class="hero-eyebrow">AI-POWERED UNIVERSITY VOICE ASSISTANT & GRIEVANCE REDRESSAL</p>
+      <p class="hero-eyebrow" data-i18n="gw_eyebrow">AI-POWERED UNIVERSITY VOICE ASSISTANT & GRIEVANCE REDRESSAL</p>
       <h1>
-        Better campus conversations.<br />
-        <span>Clearer resolutions.</span>
+        <span data-i18n="gw_hero_h1_1">Better campus conversations.</span><br />
+        <span data-i18n="gw_hero_h1_2">Clearer resolutions.</span>
       </h1>
-      <p class="hero-description">
-        CampusVoice bridges students, maintenance departments, and university administration. Report broken classroom equipment, hostel amenities, or IT failures with natural voice in English, Hindi, and Bengali, track live technician dispatch timelines, and query verified university circulars.
+      <p class="hero-description" data-i18n="gw_hero_desc_full">
+        CampusVoice bridges students, maintenance departments, and university administration. Report broken classroom
+        equipment, hostel amenities, or IT failures with natural voice in English, Hindi, and Bengali, track live
+        technician dispatch timelines, and query verified university circulars.
       </p>
 
       <div class="hero-cta-group">
         <button type="button" class="btn-primary btn-large" onclick="launchDemoStudent()">
-          <i class="fa-solid fa-graduation-cap"></i> Launch Student Portal →
+          <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="gw_launch_student">Launch Student Portal →</span>
         </button>
         <button type="button" class="btn-secondary btn-large" onclick="openAuthModal('student')">
-          <i class="fa-solid fa-key"></i> Sign In / Register
+          <i class="fa-solid fa-key"></i> <span data-i18n="gw_signin_reg">Sign In / Register</span>
         </button>
       </div>
 
       <!-- Quick Platform Stats Strip -->
-      <div style="display: flex; gap: 20px; margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0; font-size: 0.84rem; color: #64748b; flex-wrap: wrap;">
+      <div
+        style="display: flex; gap: 20px; margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0; font-size: 0.84rem; color: #64748b; flex-wrap: wrap;">
         <div>
-          <strong style="color: #0f172a; display: block; font-size: 1.15rem; font-weight: 800;">3 Units</strong>
-          <span>IT, Maintenance, Hostel</span>
+          <strong id="pubUnitsVal" style="color: #0f172a; display: block; font-size: 1.15rem; font-weight: 800;">5 Units</strong>
+          <span data-i18n="gw_stat1_lbl">IT, Maintenance, Hostel</span>
         </div>
         <div style="width: 1px; background: #e2e8f0;"></div>
         <div>
-          <strong style="color: #0d9488; display: block; font-size: 1.15rem; font-weight: 800;">98.4% SLA</strong>
-          <span>24-Hour Triage Response</span>
+          <strong id="pubSlaVal" style="color: #0d9488; display: block; font-size: 1.15rem; font-weight: 800;">Real-Time</strong>
+          <span id="pubSlaSub">Live Campus Triage</span>
         </div>
         <div style="width: 1px; background: #e2e8f0;"></div>
         <div>
           <strong style="color: #0f172a; display: block; font-size: 1.15rem; font-weight: 800;">EN &bull; हिंदी &bull; বাংলা</strong>
-          <span>Multilingual Voice AI</span>
+          <span data-i18n="gw_stat3_lbl">Multilingual Voice AI</span>
         </div>
       </div>
     </div>
@@ -84,71 +100,76 @@
         <div class="widget-header">
           <span class="widget-icon">⚡</span>
           <div>
-            <h3>Campus Quick-Access & Triage Desk</h3>
-            <small>Interactive live simulator & ticket tracking</small>
+            <h3 data-i18n="gw_widget_title">Campus Quick-Access & Triage Desk</h3>
+            <small data-i18n="gw_widget_sub">Interactive live simulator & ticket tracking</small>
           </div>
         </div>
 
         <div class="widget-tabs">
           <button type="button" class="widget-tab-btn active" id="widgetTabTrack" onclick="switchWidgetTab('track')">
-            <i class="fa-solid fa-magnifying-glass"></i> Track Live Ticket
+            <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="gw_tab_track">Track Live Ticket</span>
           </button>
           <button type="button" class="widget-tab-btn" id="widgetTabVoice" onclick="switchWidgetTab('voice')">
-            <i class="fa-solid fa-microphone"></i> Test Voice Triage
+            <i class="fa-solid fa-microphone"></i> <span data-i18n="gw_tab_voice">Test Voice Triage</span>
           </button>
         </div>
 
-        <!-- Tab 1: Live Ticket Tracker -->
+        <!-- Tab 1: Protected Live Ticket Tracker -->
         <div id="widgetPanelTrack" class="modal-form">
-          <div>
-            <label>Select or Enter Grievance Ticket ID</label>
-            <select id="quickTicketSelect" onchange="inspectQuickTicket(this.value)">
-              <option value="CV1020">CV1020 — Library Wi-Fi Disconnections (IT/Network)</option>
-              <option value="CV1021">CV1021 — Water Cooler Breakdown & Leak (Hostel Block B)</option>
-              <option value="CV1022">CV1022 — Seminar Hall Projector Burnout (Maintenance)</option>
-            </select>
+          <div
+            style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; font-size: 0.84rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span style="font-family: var(--font-mono); font-weight: 700; color: #0d9488; font-size: 0.78rem;" data-i18n="gw_prot_badge">ACCOUNT PROTECTED</span>
+              <span class="badge-progress"
+                style="padding: 3px 9px; border-radius: 9999px; font-size: 0.72rem; font-weight: 700;">
+                <i class="fa-solid fa-lock" style="margin-right: 4px;"></i><span data-i18n="gw_prot_req">Sign-In Required</span>
+              </span>
+            </div>
+            <h4 style="margin: 0 0 6px 0; font-size: 0.92rem; font-weight: 700; color: #0f172a;" data-i18n="gw_prot_title">Private Grievance Progress &amp; Timelines</h4>
+            <p style="margin: 0 0 12px 0; color: #64748b; font-size: 0.8rem; line-height: 1.45;" data-i18n="gw_prot_desc">
+              Work-order progress, technician assignments, and 5-stage timelines are strictly private to the student who
+              lodged the complaint. Sign in to view only your own tickets.
+            </p>
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 0.76rem; color: #475569;">
+              <span data-i18n="gw_prot_new">New to CampusVoice?</span>
+              <button type="button" class="btn-text" style="padding: 0; font-size: 0.76rem;"
+                onclick="openAuthModal('student', 'signup')" data-i18n="gw_prot_create">Create Student Account →</button>
+            </div>
           </div>
 
-          <div id="quickTicketPreview" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; font-size: 0.84rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span id="quickTicketIdBadge" style="font-family: var(--font-mono); font-weight: 700; color: #0d9488;">CV1020</span>
-              <span id="quickTicketStatusBadge" class="badge-progress" style="padding: 3px 8px; border-radius: 9999px; font-size: 0.72rem; font-weight: 700;">In Progress</span>
-            </div>
-            <h4 id="quickTicketTitle" style="margin: 0 0 4px 0; font-size: 0.88rem; font-weight: 700; color: #0f172a;">Library Wi-Fi Constant Disconnections</h4>
-            <p id="quickTicketLoc" style="margin: 0 0 10px 0; color: #64748b; font-size: 0.78rem;"><i class="fa-solid fa-location-dot" style="margin-right: 4px;"></i>Central Library - 2nd Floor</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 0.76rem; color: #475569;">
-              <span>Technician: <strong id="quickTicketTech">Vikram Singh</strong></span>
-              <button type="button" class="btn-text" style="padding: 0; font-size: 0.76rem;" onclick="openAuditModalForQuickTicket()">Full Timeline &rarr;</button>
-            </div>
-          </div>
-
-          <button type="button" class="btn-primary" style="width: 100%;" onclick="openAuditModalForQuickTicket()">
-            <i class="fa-solid fa-timeline"></i> View Full 5-Stage Timeline
+          <button type="button" class="btn-primary" style="width: 100%;" onclick="launchDemoStudent('complaints')">
+            <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="gw_signin_to_track">Sign In to View My Work Progress</span>
           </button>
         </div>
 
         <!-- Tab 2: Test Voice Triage Simulation -->
         <div id="widgetPanelVoice" class="modal-form hidden">
-          <label>Click an issue prompt to test AI Triage:</label>
+          <label data-i18n="gw_widget_prompt_lbl">Click an issue prompt to test AI Triage:</label>
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button type="button" class="suggestion-chip" style="text-align: left; justify-content: flex-start;" onclick="simulateVoiceQuery('The AC in classroom 204 is not working and it is very hot.')">
-              <i class="fa-solid fa-bolt" style="color: #0d9488; margin-right: 8px;"></i> "The AC in classroom 204 is not working"
+            <button type="button" class="suggestion-chip" style="text-align: left; justify-content: flex-start;"
+              onclick="simulateVoiceQuery('The AC in classroom 204 is not working and it is very hot.')">
+              <i class="fa-solid fa-bolt" style="color: #0d9488; margin-right: 8px;"></i> <span data-i18n="gw_sim_q1">"The AC in classroom 204 is not working"</span>
             </button>
-            <button type="button" class="suggestion-chip" style="text-align: left; justify-content: flex-start;" onclick="simulateVoiceQuery('Water cooler in hostel block B is leaking water.')">
-              <i class="fa-solid fa-droplet" style="color: #0284c7; margin-right: 8px;"></i> "Water cooler in hostel block B is leaking"
+            <button type="button" class="suggestion-chip" style="text-align: left; justify-content: flex-start;"
+              onclick="simulateVoiceQuery('Water cooler in hostel block B is leaking water.')">
+              <i class="fa-solid fa-droplet" style="color: #0284c7; margin-right: 8px;"></i> <span data-i18n="gw_sim_q2">"Water cooler in hostel block B is leaking"</span>
             </button>
-            <button type="button" class="suggestion-chip" style="text-align: left; justify-content: flex-start;" onclick="simulateVoiceQuery('Are there any new examination circulars?')">
-              <i class="fa-solid fa-bullhorn" style="color: #d97706; margin-right: 8px;"></i> "Are there new examination circulars?"
+            <button type="button" class="suggestion-chip" style="text-align: left; justify-content: flex-start;"
+              onclick="simulateVoiceQuery('Are there any new examination circulars?')">
+              <i class="fa-solid fa-bullhorn" style="color: #d97706; margin-right: 8px;"></i> <span data-i18n="gw_sim_q3">"Are there new examination circulars?"</span>
             </button>
           </div>
 
-          <div id="voiceSimResult" style="background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 10px; padding: 12px; font-size: 0.82rem; color: #134e4a;" class="hidden">
+          <div id="voiceSimResult"
+            style="background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 10px; padding: 12px; font-size: 0.82rem; color: #134e4a;"
+            class="hidden">
             <strong id="voiceSimTitle" style="display: block; margin-bottom: 4px;">⚡ AI Urgency Meter:</strong>
             <p id="voiceSimBody" style="margin: 0; line-height: 1.4;"></p>
           </div>
 
           <button type="button" class="btn-primary" style="width: 100%;" onclick="launchDemoStudent('voice')">
-            <i class="fa-solid fa-microphone-lines"></i> Open Live Multilingual Assistant
+            <i class="fa-solid fa-microphone-lines"></i> <span data-i18n="gw_open_live_assistant">Open Live Multilingual Assistant</span>
           </button>
         </div>
 
@@ -159,30 +180,31 @@
   <!-- Role Portals Section (MedBrief 3-Card Grid) -->
   <section class="landing-portals-section">
     <div class="section-title-wrap">
-      <p class="eyebrow">AUTHORIZED CAMPUS ROLES</p>
-      <h2>Access Your Dedicated Portal</h2>
+      <p class="eyebrow" data-i18n="gw_portals_eyebrow">AUTHORIZED CAMPUS ROLES</p>
+      <h2 data-i18n="gw_portals_heading">Access Your Dedicated Portal</h2>
     </div>
 
     <div class="portals-grid">
-      
+
       <!-- Card 1: Student Care & Voice Portal -->
       <article class="portal-card student-theme">
         <div class="portal-card-icon">👨‍🎓</div>
-        <h3>Student Voice & Care Portal</h3>
-        <p>
-          Lodge maintenance grievances with natural voice (EN, HI, BN), track real-time resolution stages, browse official academic circulars, and receive instant technician dispatch alerts.
+        <h3 data-i18n="gw_p1_title">Student Voice & Care Portal</h3>
+        <p data-i18n="gw_p1_desc">
+          Lodge maintenance grievances with natural voice (EN, HI, BN), track real-time resolution stages, browse
+          official academic circulars, and receive instant technician dispatch alerts.
         </p>
         <ul class="portal-features-list">
-          <li><span class="check">✓</span> Multilingual AI Voice Assistant (English, Hindi, Bengali)</li>
-          <li><span class="check">✓</span> Instant Urgency Scoring & Safety Hazard Triage (0-100)</li>
-          <li><span class="check">✓</span> 5-Stage Live Technician Inspection Timeline</li>
-          <li><span class="check">✓</span> Verified Circular Search & Campus Handbook FAQ</li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p1_f1">Multilingual AI Voice Assistant (English, Hindi, Bengali)</span></li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p1_f2">Instant Urgency Scoring & Safety Hazard Triage (0-100)</span></li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p1_f3">5-Stage Live Technician Inspection Timeline</span></li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p1_f4">Verified Circular Search & Campus Handbook FAQ</span></li>
         </ul>
         <div class="portal-card-footer">
-          <button type="button" class="btn-primary" onclick="launchDemoStudent()">
+          <button type="button" class="btn-primary" onclick="launchDemoStudent()" data-i18n="gw_launch_student">
             Launch Student Portal →
           </button>
-          <button type="button" class="btn-text" onclick="openAuthModal('student', 'signup')">
+          <button type="button" class="btn-text" onclick="openAuthModal('student', 'signup')" data-i18n="gw_p1_reg">
             Register
           </button>
         </div>
@@ -191,22 +213,20 @@
       <!-- Card 2: Department Operations Workspace -->
       <article class="portal-card dept-theme">
         <div class="portal-card-icon">🛠️</div>
-        <h3>Department Operations Workspace</h3>
-        <p>
-          Assigned maintenance queue for IT, electrical, civil, and hostel facilities. Review AI priority scores, assign field technicians, and update inspection work orders in real-time.
+        <h3 data-i18n="gw_p2_title">Department Operations Workspace</h3>
+        <p data-i18n="gw_p2_desc">
+          Assigned maintenance queue for IT, electrical, civil, and hostel facilities. Review AI priority scores, assign
+          field technicians, and update inspection work orders in real-time.
         </p>
         <ul class="portal-features-list">
-          <li><span class="check">✓</span> Filtered IT, Hostel, Maintenance, & Sanitation queues</li>
-          <li><span class="check">✓</span> Priority & sentiment hazard badge inspection</li>
-          <li><span class="check">✓</span> 1-Click field technician dispatch & notes</li>
-          <li><span class="check">✓</span> Instant student status synchronization</li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p2_f1">Filtered IT, Hostel, Maintenance, & Sanitation queues</span></li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p2_f2">Priority & sentiment hazard badge inspection</span></li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p2_f3">1-Click field technician dispatch & notes</span></li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p2_f4">Instant student status synchronization</span></li>
         </ul>
         <div class="portal-card-footer">
-          <button type="button" class="btn-primary btn-teal" onclick="openAuthModal('department')">
+          <button type="button" class="btn-primary btn-teal" onclick="openAuthModal('department')" data-i18n="gw_p2_btn">
             Department Sign In →
-          </button>
-          <button type="button" class="btn-text" onclick="launchDemoDept('dept_it')">
-            Demo IT Staff
           </button>
         </div>
       </article>
@@ -214,22 +234,20 @@
       <!-- Card 3: University Administration & Dean Desk -->
       <article class="portal-card admin-theme">
         <div class="portal-card-icon">🏛️</div>
-        <h3>University Administration Desk</h3>
-        <p>
-          Oversee campus-wide operations, review institutional SLA metrics, broadcast official circulars with attachments, and export accreditation CSV compliance reports.
+        <h3 data-i18n="gw_p3_title">University Administration Desk</h3>
+        <p data-i18n="gw_p3_desc">
+          Oversee campus-wide operations, review institutional SLA metrics, broadcast official circulars with
+          attachments, and export accreditation CSV compliance reports.
         </p>
         <ul class="portal-features-list">
-          <li><span class="check">✓</span> High-level KPI resolution rates & SLA metrics</li>
-          <li><span class="check">✓</span> Master circular publication to student notice board</li>
-          <li><span class="check">✓</span> Dynamic campus QR standee generator</li>
-          <li><span class="check">✓</span> 1-Click monthly grievance audit CSV export</li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p3_f1">High-level KPI resolution rates & SLA metrics</span></li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p3_f2">Master circular publication to student notice board</span></li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p3_f3">Dynamic campus QR standee generator</span></li>
+          <li><span class="check">✓</span> <span data-i18n="gw_p3_f4">1-Click monthly grievance audit CSV export</span></li>
         </ul>
         <div class="portal-card-footer">
-          <button type="button" class="btn-primary btn-violet" onclick="openAuthModal('admin')">
+          <button type="button" class="btn-primary btn-violet" onclick="openAuthModal('admin')" data-i18n="gw_p3_btn">
             Admin Sign In →
-          </button>
-          <button type="button" class="btn-text" onclick="launchDemoAdmin()">
-            Demo Admin Dean
           </button>
         </div>
       </article>
@@ -241,23 +259,26 @@
   <section class="landing-features-section">
     <div class="feature-item">
       <span class="feat-icon">⚡</span>
-      <h4>Explainable Urgency Scoring</h4>
-      <p>Transparent multi-factor safety hazard triage (0-100) prioritizing electrical failures, water disruptions, and academic blockers.</p>
+      <h4 data-i18n="gw_feat1_title">Explainable Urgency Scoring</h4>
+      <p data-i18n="gw_feat1_desc">Transparent multi-factor safety hazard triage (0-100) prioritizing electrical failures, water disruptions, and
+        academic blockers.</p>
     </div>
     <div class="feature-item">
       <span class="feat-icon">🎙️</span>
-      <h4>Multilingual Voice AI</h4>
-      <p>Natural speech recognition and synthesis supporting English, हिंदी (Hindi), and বাংলা (Bengali) with instant local rule fallbacks.</p>
+      <h4 data-i18n="gw_feat2_title">Multilingual Voice AI</h4>
+      <p data-i18n="gw_feat2_desc">Natural speech recognition and synthesis supporting English, हिंदी (Hindi), and বাংলা (Bengali) with live AI backend analysis.</p>
     </div>
     <div class="feature-item">
       <span class="feat-icon">🔔</span>
-      <h4>Real-Time Polling & Toast Feeds</h4>
-      <p>Students receive live slide-over drawer updates and floating notifications whenever technicians are assigned or progress occurs.</p>
+      <h4 data-i18n="gw_feat3_title">Real-Time WebSocket & Toast Feeds</h4>
+      <p data-i18n="gw_feat3_desc">Students receive instant WebSocket updates and floating notifications whenever technicians are assigned or
+        progress occurs.</p>
     </div>
     <div class="feature-item">
       <span class="feat-icon">📱</span>
-      <h4>Notice Board QR Standees</h4>
-      <p>Cryptographically linked mobile QR tokens and printable official campus posters for classroom bulletin boards and hostel lobbies.</p>
+      <h4 data-i18n="gw_feat4_title">Notice Board QR Standees</h4>
+      <p data-i18n="gw_feat4_desc">Dynamically linked mobile QR tokens and printable official campus posters for classroom bulletin boards
+        and hostel lobbies.</p>
     </div>
   </section>
 
@@ -267,11 +288,11 @@
       <span class="portal-mark-sm">CV</span>
       <span style="font-weight: 700; color: #0f172a;">CampusVoice System</span>
     </div>
-    <p>&copy; 2026 CampusVoice &bull; University Smart Assistance & Grievance Redressal ERP</p>
+    <p data-i18n="gw_footer_copy">&copy; 2026 CampusVoice &bull; University Smart Assistance & Grievance Redressal ERP</p>
     <div style="display: flex; gap: 14px; font-size: 0.84rem; color: #64748b;">
-      <a href="/docs" target="_blank" class="btn-text" style="padding: 0;">OpenAPI Contract</a>
+      <a href="/docs" target="_blank" class="btn-text" style="padding: 0;" data-i18n="gw_footer_openapi">OpenAPI Contract</a>
       <span>&bull;</span>
-      <button type="button" class="btn-text" style="padding: 0;" onclick="openQrModal()">Print Notice Standee</button>
+      <button type="button" class="btn-text" style="padding: 0;" onclick="openQrModal()" data-i18n="gw_footer_standee">Print Notice Standee</button>
     </div>
   </footer>
 
@@ -281,18 +302,18 @@
   <div id="authModal" class="medbrief-modal-overlay hidden" onclick="handleAuthModalBackdrop(event)">
     <div class="medbrief-modal-card">
       <div class="medbrief-modal-header">
-        <h3 id="authModalTitle"><i class="fa-solid fa-graduation-cap" style="color: #0d9488;"></i> Access Campus Portal</h3>
+        <h3 id="authModalTitle"><i class="fa-solid fa-graduation-cap" style="color: #0d9488;"></i> <span data-i18n="auth_modal_access">Access Campus Portal</span></h3>
         <button type="button" class="medbrief-modal-close" onclick="closeAuthModal()">&times;</button>
       </div>
 
       <div class="medbrief-modal-body">
-        
+
         <!-- Auth Tabs: Sign In vs Sign Up -->
         <div class="widget-tabs" style="margin-bottom: 20px;">
-          <button type="button" class="widget-tab-btn active" id="tabSignIn" onclick="setAuthMode('signin')">
+          <button type="button" class="widget-tab-btn active" id="tabSignIn" onclick="setAuthMode('signin')" data-i18n="auth_tab_signin">
             Sign In to Account
           </button>
-          <button type="button" class="widget-tab-btn" id="tabSignUp" onclick="setAuthMode('signup')">
+          <button type="button" class="widget-tab-btn" id="tabSignUp" onclick="setAuthMode('signup')" data-i18n="auth_tab_signup">
             New Student Registration
           </button>
         </div>
@@ -300,75 +321,67 @@
         <!-- Form 1: Sign In -->
         <div id="panelSignIn" class="modal-form">
           <div>
-            <label>Select Target Portal Role</label>
+            <label data-i18n="auth_role_label">Select Target Portal Role</label>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 4px;">
-              <button type="button" class="btn-secondary btn-small" id="roleBtnStudent" onclick="selectRole('student')" style="background-color: #f0fdfa; border-color: #0d9488; color: #0d9488; font-weight: 700;">
+              <button type="button" class="btn-secondary btn-small" id="roleBtnStudent" onclick="selectRole('student')"
+                style="background-color: #f0fdfa; border-color: #0d9488; color: #0d9488; font-weight: 700;" data-i18n="auth_role_student">
                 👨‍🎓 Student
               </button>
-              <button type="button" class="btn-secondary btn-small" id="roleBtnDept" onclick="selectRole('department')">
+              <button type="button" class="btn-secondary btn-small" id="roleBtnDept" onclick="selectRole('department')" data-i18n="auth_role_dept">
                 🛠️ Staff / Dept
               </button>
-              <button type="button" class="btn-secondary btn-small" id="roleBtnAdmin" onclick="selectRole('admin')">
+              <button type="button" class="btn-secondary btn-small" id="roleBtnAdmin" onclick="selectRole('admin')" data-i18n="auth_role_admin">
                 🏛️ Administration
               </button>
             </div>
           </div>
 
-          <form onsubmit="onSignInSubmit(event)" style="display: flex; flex-direction: column; gap: 12px; margin-top: 6px;">
-            <div>
-              <label id="inputUsernameLabel">Roll Number or Username</label>
-              <input type="text" id="signInUsername" required value="student" placeholder="e.g. STU-2023-01 or student">
+          <form onsubmit="onSignInSubmit(event)"
+            style="display: flex; flex-direction: column; gap: 12px; margin-top: 6px;">
+            <div id="authErrorBanner" class="hidden"
+              style="padding: 10px 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; color: #991b1b; font-size: 0.82rem; font-weight: 600;">
             </div>
 
             <div>
-              <label>Password</label>
-              <input type="password" id="signInPassword" required value="student123" placeholder="Enter password">
+              <label id="inputUsernameLabel" data-i18n="auth_lbl_stu">Student ID, Username, or Email</label>
+              <input type="text" id="signInUsername" required value=""
+                placeholder="e.g. STU-2024-88, username, or email" data-i18n-placeholder="auth_ph_stu">
             </div>
 
-            <button type="submit" class="btn-primary" style="margin-top: 6px;">
-              Sign In to Portal &rarr;
+            <div>
+              <label data-i18n="auth_lbl_pwd">Password</label>
+              <input type="password" id="signInPassword" required value="" placeholder="Enter your password" data-i18n-placeholder="auth_ph_pwd">
+            </div>
+
+            <button type="submit" class="btn-primary" style="margin-top: 6px;" data-i18n="auth_btn_signin">
+              Sign In to Portal →
             </button>
           </form>
-
-          <!-- 1-Click Evaluator Demo Shortcuts -->
-          <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #e2e8f0;">
-            <p style="font-size: 0.74rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin: 0 0 8px 0; letter-spacing: 0.05em;">
-              ⚡ Evaluator 1-Click Instant Sign-In:
-            </p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-              <button type="button" class="btn-secondary btn-small" style="font-size: 0.78rem; text-align: left; justify-content: flex-start;" onclick="quickLogin('student', 'student123')">
-                <span style="color: #0d9488; font-weight: 700;">👨‍🎓 Rahul Sharma (Student)</span>
-              </button>
-              <button type="button" class="btn-secondary btn-small" style="font-size: 0.78rem; text-align: left; justify-content: flex-start;" onclick="quickLogin('dept_it', 'it123')">
-                <span style="color: #0284c7; font-weight: 700;">🛠️ Amit Sen (IT Dept)</span>
-              </button>
-              <button type="button" class="btn-secondary btn-small" style="font-size: 0.78rem; text-align: left; justify-content: flex-start;" onclick="quickLogin('dept_maintenance', 'maint123')">
-                <span style="color: #d97706; font-weight: 700;">🛠️ Maintenance Officer</span>
-              </button>
-              <button type="button" class="btn-secondary btn-small" style="font-size: 0.78rem; text-align: left; justify-content: flex-start;" onclick="quickLogin('admin', 'admin123')">
-                <span style="color: #7c3aed; font-weight: 700;">🏛️ Dr. S. K. Verma (Dean)</span>
-              </button>
-            </div>
-          </div>
         </div>
 
         <!-- Form 2: New Student Registration -->
         <div id="panelSignUp" class="modal-form hidden">
-          <p class="modal-subtitle">Register your university student account to submit grievances and track real-time resolution stages.</p>
+          <p class="modal-subtitle" data-i18n="auth_signup_sub">Register your university student account to submit grievances and track real-time
+            resolution stages.</p>
+
+          <div id="signupErrorBanner" class="hidden"
+            style="padding: 10px 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; color: #991b1b; font-size: 0.82rem; font-weight: 600;">
+          </div>
 
           <form onsubmit="onSignUpSubmit(event)" style="display: flex; flex-direction: column; gap: 12px;">
             <div>
-              <label>Full Legal Name *</label>
-              <input type="text" id="signupFullName" required placeholder="e.g. Priya Mukherjee">
+              <label data-i18n="auth_su_name">Full Legal Name *</label>
+              <input type="text" id="signupFullName" required placeholder="e.g. Priya Mukherjee" data-i18n-placeholder="auth_ph_su_name">
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
               <div>
-                <label>Roll Number / ID *</label>
-                <input type="text" id="signupStudentId" required placeholder="e.g. STU-2024-88" style="text-transform: uppercase; font-family: var(--font-mono);">
+                <label data-i18n="auth_su_id">Roll Number / ID *</label>
+                <input type="text" id="signupStudentId" required placeholder="e.g. STU-2024-88" data-i18n-placeholder="auth_ph_su_id"
+                  style="text-transform: uppercase; font-family: var(--font-mono);">
               </div>
               <div>
-                <label>Academic Semester</label>
+                <label data-i18n="auth_su_sem">Academic Semester</label>
                 <select id="signupSemester">
                   <option value="1st Semester">1st Semester</option>
                   <option value="2nd Semester">2nd Semester</option>
@@ -383,7 +396,7 @@
             </div>
 
             <div>
-              <label>Department / Branch *</label>
+              <label data-i18n="auth_su_dept">Department / Branch *</label>
               <select id="signupDepartment" required>
                 <option value="Computer Science & Engineering">Computer Science & Engineering</option>
                 <option value="Information Technology">Information Technology</option>
@@ -397,22 +410,22 @@
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
               <div>
-                <label>Campus Email *</label>
+                <label data-i18n="auth_su_email">Campus Email *</label>
                 <input type="email" id="signupEmail" required placeholder="student@campus.edu.in">
               </div>
               <div>
-                <label>Mobile Number</label>
+                <label data-i18n="auth_su_contact">Mobile Number</label>
                 <input type="text" id="signupContact" placeholder="+91 98765 00000">
               </div>
             </div>
 
             <div>
-              <label>Choose Password *</label>
-              <input type="password" id="signupPassword" required minlength="4" placeholder="At least 4 characters">
+              <label data-i18n="auth_su_pwd">Choose Password *</label>
+              <input type="password" id="signupPassword" required minlength="4" placeholder="At least 4 characters" data-i18n-placeholder="auth_ph_su_pwd">
             </div>
 
-            <button type="submit" class="btn-primary" style="margin-top: 8px;">
-              Create Student Account & Enter Portal &rarr;
+            <button type="submit" class="btn-primary" style="margin-top: 8px;" data-i18n="auth_btn_signup">
+              Create Student Account & Enter Portal →
             </button>
           </form>
         </div>
@@ -427,58 +440,42 @@
   <div id="qrModal" class="medbrief-modal-overlay hidden" onclick="handleQrModalBackdrop(event)">
     <div class="medbrief-modal-card" style="max-width: 460px; text-align: center;">
       <div class="medbrief-modal-header">
-        <h3><i class="fa-solid fa-qrcode" style="color: #0d9488;"></i> Official Campus Notice Standee</h3>
+        <h3><i class="fa-solid fa-qrcode" style="color: #0d9488;"></i> <span data-i18n="qr_modal_title">Official Campus Notice Standee</span></h3>
         <button type="button" class="medbrief-modal-close" onclick="closeQrModal()">&times;</button>
       </div>
 
       <div class="medbrief-modal-body" style="padding: 24px;">
         <div style="border: 2px dashed #cbd5e1; border-radius: 16px; padding: 24px; background: #fafbfc;">
           <div class="portal-mark" style="margin: 0 auto 12px auto;">CV</div>
-          <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0 0 6px 0; color: #0f172a;">CAMPUSVOICE GRIEVANCE SYSTEM</h3>
-          <p style="font-size: 0.82rem; color: #64748b; margin: 0 0 16px 0;">Scan with any phone camera to report broken classroom equipment, hostel amenities, or ask campus FAQs.</p>
-          <img src="/api/qr/code" alt="Campus QR Code" style="width: 170px; height: 170px; margin: 0 auto; display: block; border-radius: 12px; border: 1px solid #e2e8f0; background: #ffffff; padding: 6px;">
-          <p style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #0d9488; margin: 12px 0 0 0;">Official Student Portal Gateway</p>
-        </div>
-
-        <div style="display: flex; justify-content: center; gap: 12px; margin-top: 20px;">
-          <button type="button" class="btn-primary" onclick="window.print()">
-            <i class="fa-solid fa-print"></i> Print A4 Notice Standee
-          </button>
-          <button type="button" class="btn-secondary" onclick="closeQrModal()">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- =======================================================
-       QUICK TICKET AUDIT TIMELINE MODAL (For Landing Page)
-       ======================================================= -->
-  <div id="landingTicketModal" class="medbrief-modal-overlay hidden" onclick="handleLandingTicketBackdrop(event)">
-    <div class="medbrief-modal-card" style="max-width: 520px;">
-      <div class="medbrief-modal-header">
-        <h3><i class="fa-solid fa-timeline" style="color: #0d9488;"></i> Grievance Audit & Inspection Timeline</h3>
-        <button type="button" class="medbrief-modal-close" onclick="closeLandingTicketModal()">&times;</button>
-      </div>
-
-      <div class="medbrief-modal-body" style="padding: 20px 24px;">
-        <div style="background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 12px; padding: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <span id="modalTicketId" style="font-family: var(--font-mono); font-weight: 800; color: #0d9488; font-size: 1rem;">CV1020</span>
-            <h4 id="modalTicketTitle" style="margin: 4px 0 2px 0; font-size: 0.92rem; font-weight: 700; color: #0f172a;">Library Wi-Fi Constant Disconnections</h4>
-            <p id="modalTicketLoc" style="margin: 0; font-size: 0.78rem; color: #475569;">Central Library - 2nd Floor</p>
+          <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0 0 6px 0; color: #0f172a;" data-i18n="qr_standee_title">CAMPUSVOICE GRIEVANCE
+            SYSTEM</h3>
+          <p style="font-size: 0.82rem; color: #64748b; margin: 0 0 16px 0;" data-i18n="qr_standee_desc">Scan with any phone camera to report broken
+            classroom equipment, hostel amenities, or ask campus FAQs.</p>
+          <img id="qrCodeImg" src="/api/qr/code" alt="Campus QR Code"
+            style="width: 190px; height: 190px; margin: 0 auto; display: block; border-radius: 12px; border: 1px solid #e2e8f0; background: #ffffff; padding: 8px;">
+          <p
+            style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #0d9488; margin: 12px 0 4px 0;" data-i18n="qr_standee_foot">
+            Official Student Portal Gateway</p>
+          <div style="display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; background: #ffffff; border: 1px solid #e2e8f0; padding: 4px 10px; border-radius: 9999px; font-size: 0.74rem;">
+            <a id="qrResolvedUrl" href="#" target="_blank" style="font-family: var(--font-mono); color: #0f172a; font-weight: 600; text-decoration: none;">Loading link...</a>
+            <button type="button" id="qrCopyBtn" onclick="copyQrPortalUrl()" title="Copy URL" style="border: none; background: transparent; color: #0d9488; cursor: pointer; padding: 0 2px;">
+              <i class="fa-regular fa-copy"></i>
+            </button>
           </div>
-          <span id="modalTicketStatusBadge" class="badge-progress" style="padding: 4px 10px; border-radius: 9999px; font-size: 0.76rem; font-weight: 700;">In Progress</span>
         </div>
 
-        <div id="modalTimelineContainer" style="padding-left: 6px;"></div>
-
-        <div class="modal-actions" style="margin-top: 18px;">
-          <button type="button" class="btn-primary btn-small" onclick="launchDemoStudent('complaints')">
-            Open in Student Portal &rarr;
+        <div style="margin-top: 12px; display: flex; gap: 6px;">
+          <input type="url" id="qrCustomUrlInput" placeholder="Optional: custom https:// or LAN URL" style="flex: 1; font-size: 0.78rem; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+          <button type="button" class="btn-secondary btn-small" onclick="refreshQrWithCustomUrl()" title="Update QR">
+            <i class="fa-solid fa-rotate"></i>
           </button>
-          <button type="button" class="btn-secondary btn-small" onclick="closeLandingTicketModal()">
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 12px; margin-top: 16px;">
+          <button type="button" class="btn-primary" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> <span data-i18n="qr_btn_print">Print A4 Notice Standee</span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="closeQrModal()" data-i18n="btn_close">
             Close
           </button>
         </div>
@@ -486,52 +483,40 @@
     </div>
   </div>
 
+  <script src="i18n.js"></script>
   <script src="auth.js"></script>
   <script>
-    // Mock Grievance Data for Instant Offline/Online Demonstration
-    const LANDING_TICKETS = {
-      CV1020: {
-        id: "CV1020",
-        title: "Library Wi-Fi Constant Disconnections",
-        location: "Central Library - 2nd Floor",
-        status: "In Progress",
-        badgeClass: "badge-progress",
-        technician: "Vikram Singh (Network Admin)",
-        timeline: [
-          { title: "Complaint Registered", desc: "Reported via Student Multilingual Voice Assistant.", time: "Yesterday &bull; 10:30 AM" },
-          { title: "Auto-Routed to IT Cell", desc: "Safety & priority check passed. High priority network node.", time: "Yesterday &bull; 11:15 AM" },
-          { title: "Technician Dispatched", desc: "Technician Vikram Singh inspecting Cisco AP-04.", time: "Yesterday &bull; 12:00 PM" }
-        ]
-      },
-      CV1021: {
-        id: "CV1021",
-        title: "Water Cooler Breakdown & Leakage",
-        location: "Hostel Block B - Floor 2",
-        status: "Pending",
-        badgeClass: "badge-pending",
-        technician: "Plumbing Unit Duty Officer",
-        timeline: [
-          { title: "Complaint Registered", desc: "Lodge ticket via student portal form.", time: "Today &bull; 09:15 AM" },
-          { title: "Flagged High Urgency", desc: "Water utility interruption identified by AI Triage (Score: 85/100).", time: "Today &bull; 09:16 AM" }
-        ]
-      },
-      CV1022: {
-        id: "CV1022",
-        title: "Seminar Hall Projector Burnout",
-        location: "Academic Block A - Room 204",
-        status: "Resolved",
-        badgeClass: "badge-resolved",
-        technician: "Ramesh Chand (Audiovisual Cell)",
-        timeline: [
-          { title: "Complaint Registered", desc: "Voice submission recorded.", time: "2 days ago" },
-          { title: "Technician Dispatched", desc: "Replacement bulb requisition approved.", time: "Yesterday" },
-          { title: "Defect Resolved", desc: "Bulb replaced and tested with HDMI input.", time: "Yesterday &bull; 04:00 PM" }
-        ]
-      }
-    };
-
-    let activeSelectedTicketId = "CV1020";
     let activeRole = "student";
+    let activeAuthMode = "signin";
+    let lastPublicStats = null;
+
+    function setGatewayLanguage(lang) {
+      const activeLang = (lang === "hi" || lang === "bn") ? lang : "en";
+      localStorage.setItem("campusvoice_lang", activeLang);
+
+      ["en", "hi", "bn"].forEach(l => {
+        const b = document.getElementById(`gw-lang-${l}`);
+        if (!b) return;
+        if (l === activeLang) {
+          b.style.background = "#ffffff";
+          b.style.color = "#0d9488";
+          b.style.boxShadow = "0 1px 2px rgba(0,0,0,0.06)";
+          b.style.fontWeight = "700";
+        } else {
+          b.style.background = "transparent";
+          b.style.color = "#475569";
+          b.style.boxShadow = "none";
+          b.style.fontWeight = "600";
+        }
+      });
+
+      if (typeof applyPageTranslations === "function") {
+        applyPageTranslations(activeLang);
+      }
+      renderPublicCampusStats();
+      selectRole(activeRole);
+      setAuthMode(activeAuthMode);
+    }
 
     function switchWidgetTab(tab) {
       const btnTrack = document.getElementById("widgetTabTrack");
@@ -552,85 +537,110 @@
       }
     }
 
-    function inspectQuickTicket(ticketId) {
-      activeSelectedTicketId = ticketId;
-      const t = LANDING_TICKETS[ticketId];
-      if (!t) return;
-
-      document.getElementById("quickTicketIdBadge").innerText = t.id;
-      document.getElementById("quickTicketTitle").innerText = t.title;
-      document.getElementById("quickTicketLoc").innerHTML = `<i class="fa-solid fa-location-dot" style="margin-right: 4px;"></i>${t.location}`;
-      document.getElementById("quickTicketTech").innerText = t.technician;
-
-      const badge = document.getElementById("quickTicketStatusBadge");
-      badge.innerText = t.status;
-      badge.className = t.badgeClass;
+    function renderPublicCampusStats() {
+      const activeLang = (typeof getSavedLanguage === "function") ? getSavedLanguage() : "en";
+      const stats = lastPublicStats;
+      if (!stats) return;
+      const unitsEl = document.getElementById("pubUnitsVal");
+      const slaEl = document.getElementById("pubSlaVal");
+      const slaSubEl = document.getElementById("pubSlaSub");
+      const unitWord = activeLang === "hi" ? "इकाइयाँ" : (activeLang === "bn" ? "টি ইউনিট" : "Units");
+      const handledWord = activeLang === "hi" ? "टिकट निपटाए गए" : (activeLang === "bn" ? "টি টিকিট সমাধান" : "Tickets Handled");
+      const rtWord = activeLang === "hi" ? "रीयल-टाइम" : (activeLang === "bn" ? "রিয়েল-টাইম" : "Real-Time");
+      if (unitsEl && stats.active_units !== undefined) {
+        unitsEl.innerText = `${stats.active_units} ${unitWord}`;
+      }
+      if (slaEl && stats.sla_rate !== undefined) {
+        slaEl.innerText = stats.total_complaints > 0 ? `${stats.sla_rate}% SLA` : rtWord;
+      }
+      if (slaSubEl && stats.total_complaints !== undefined) {
+        slaSubEl.innerText = `${stats.resolved_complaints || 0} / ${stats.total_complaints} ${handledWord}`;
+      }
     }
 
-    function openAuditModalForQuickTicket() {
-      const t = LANDING_TICKETS[activeSelectedTicketId] || LANDING_TICKETS.CV1020;
-      document.getElementById("modalTicketId").innerText = t.id;
-      document.getElementById("modalTicketTitle").innerText = t.title;
-      document.getElementById("modalTicketLoc").innerText = t.location;
-
-      const badge = document.getElementById("modalTicketStatusBadge");
-      badge.innerText = t.status;
-      badge.className = t.badgeClass;
-
-      const cont = document.getElementById("modalTimelineContainer");
-      cont.innerHTML = t.timeline.map(item => `
-        <div class="timeline-item">
-          <span class="timeline-dot"></span>
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h5 style="margin: 0; font-size: 0.84rem; font-weight: 700; color: #0f172a;">${item.title}</h5>
-            <span style="font-size: 0.72rem; color: #94a3b8; font-family: var(--font-mono);">${item.time}</span>
-          </div>
-          <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: #475569;">${item.desc}</p>
-        </div>
-      `).join("");
-
-      document.getElementById("landingTicketModal").classList.remove("hidden");
+    async function loadPublicCampusStats() {
+      try {
+        const res = await fetch(`${API_BASE}/public/stats`);
+        if (!res.ok) return;
+        lastPublicStats = await res.json();
+        renderPublicCampusStats();
+      } catch (e) {}
     }
 
-    function closeLandingTicketModal() {
-      document.getElementById("landingTicketModal").classList.add("hidden");
-    }
-
-    function handleLandingTicketBackdrop(e) {
-      if (e.target.id === "landingTicketModal") closeLandingTicketModal();
-    }
-
-    function simulateVoiceQuery(query) {
+    async function simulateVoiceQuery(query) {
+      const tr = (k) => (typeof t === "function" ? t(k) : k);
       const resBox = document.getElementById("voiceSimResult");
       const title = document.getElementById("voiceSimTitle");
       const body = document.getElementById("voiceSimBody");
       resBox.classList.remove("hidden");
+      title.innerHTML = `<strong>⚡ ${tr("analyzing_msg")}</strong>`;
+      body.innerText = "";
 
-      if (query.includes("AC in classroom")) {
-        title.innerHTML = `⚡ <strong>Maintenance Category &bull; Urgency Score: 72/100 (Medium)</strong>`;
-        body.innerHTML = `Disruption of academic lecture detected in Classroom 204. Triage routed to Facility Maintenance Officer.`;
-      } else if (query.includes("Water cooler")) {
-        title.innerHTML = `⚡ <strong>Hostel Category &bull; Urgency Score: 85/100 (High Priority)</strong>`;
-        body.innerHTML = `Critical utility & sanitation disruption detected in Hostel Block B. Emergency plumbing dispatch triggered.`;
-      } else {
-        title.innerHTML = `📢 <strong>Verified RAG Circular Retrieval</strong>`;
-        body.innerHTML = `Mid-Term Autumn 2026 timetable verified. Regular exams commence from 10th of next month. Identity cards mandatory.`;
-      }
+      const activeLang = (typeof getSavedLanguage === "function") ? getSavedLanguage() : "en";
+      try {
+        const res = await fetch(`${API_BASE}/assistant/preview`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, language: activeLang, dry_run: true })
+        });
+        if (!res.ok) throw new Error("Server returned error");
+        const data = await res.json();
+        const ext = data.extracted_data || {};
 
-      // Spoken Speech Synthesis
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(body.innerText);
-        utter.rate = 1.05;
-        window.speechSynthesis.speak(utter);
+        if (data.notices_found && data.notices_found.length > 0) {
+          const catText = (typeof tCategory === "function") ? tCategory(data.notices_found[0].category || "Notice") : (data.notices_found[0].category || "Notice");
+          title.innerHTML = `📢 <strong>${tr("ai_circular_verified")} ${catText}</strong>`;
+        } else if (data.faq_data) {
+          title.innerHTML = `ℹ️ <strong>${tr("nav_faq")} &bull; ${data.faq_data.category || "Directory"}</strong>`;
+        } else {
+          const catText = (typeof tCategory === "function") ? tCategory(ext.category || "Maintenance") : (ext.category || "Maintenance");
+          const prioText = (typeof tPriority === "function") ? tPriority(ext.priority || "Medium") : (ext.priority || "Medium");
+          title.innerHTML = `⚡ <strong>${catText} &bull; ${tr("ai_urgency_assessment")} ${ext.urgency_score ?? 50}/100 (${prioText} ${tr("ai_priority_suffix")})</strong>`;
+        }
+        body.innerText = data.display_text || data.spoken_response || "";
+
+        if ("speechSynthesis" in window && (data.spoken_response || body.innerText)) {
+          window.speechSynthesis.cancel();
+          const utter = new SpeechSynthesisUtterance(data.spoken_response || body.innerText);
+          const langCodes = { en: "en-US", hi: "hi-IN", bn: "bn-IN" };
+          utter.lang = langCodes[data.language || activeLang] || "en-US";
+          utter.rate = 1.02;
+          window.speechSynthesis.speak(utter);
+        }
+      } catch (err) {
+        title.innerHTML = `<strong>⚠️ CampusVoice Server Offline</strong>`;
+        body.innerText = tr("auth_err_server_signin");
       }
     }
 
     // Auth Modal Handlers
     function openAuthModal(role = 'student', mode = 'signin') {
+      if (typeof clearAuthErrors === 'function') clearAuthErrors();
       document.getElementById("authModal").classList.remove("hidden");
       selectRole(role);
       setAuthMode(mode);
+
+      const activeUser = (typeof getCurrentUser === "function") ? getCurrentUser() : null;
+      if (activeUser && activeUser.verified_auth) {
+        const tr = (k) => (typeof t === "function" ? t(k) : k);
+        const bannerId = mode === "signup" ? "signupErrorBanner" : "authErrorBanner";
+        const banner = document.getElementById(bannerId);
+        if (banner) {
+          const safeName = String(activeUser.full_name || activeUser.username).replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          banner.classList.remove("hidden");
+          banner.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span><i class="fa-solid fa-lock" style="margin-right: 6px;"></i>${tr("auth_signed_in_prefix")} <strong>${safeName}</strong> (${activeUser.role}). ${tr("auth_signed_in_suffix")}</span>
+              <button type="button" class="btn-text" style="padding: 0; font-size: 0.8rem; color: #0d9488; font-weight: 700;" onclick="signOutFromModal()">${tr("sign_out")}</button>
+            </div>
+          `;
+        }
+      }
+    }
+
+    async function signOutFromModal() {
+      await logout(false);
+      clearAuthErrors();
     }
 
     function closeAuthModal() {
@@ -642,6 +652,9 @@
     }
 
     function setAuthMode(mode) {
+      activeAuthMode = mode;
+      const tr = (k) => (typeof t === "function" ? t(k) : k);
+      if (typeof clearAuthErrors === 'function') clearAuthErrors();
       const btnIn = document.getElementById("tabSignIn");
       const btnUp = document.getElementById("tabSignUp");
       const pIn = document.getElementById("panelSignIn");
@@ -652,18 +665,20 @@
         btnUp.classList.remove("active");
         pIn.classList.remove("hidden");
         pUp.classList.add("hidden");
-        document.getElementById("authModalTitle").innerHTML = `<i class="fa-solid fa-graduation-cap" style="color: #0d9488;"></i> Access Campus Portal`;
+        document.getElementById("authModalTitle").innerHTML = `<i class="fa-solid fa-graduation-cap" style="color: #0d9488;"></i> <span>${tr("auth_modal_access")}</span>`;
       } else {
         btnUp.classList.add("active");
         btnIn.classList.remove("active");
         pUp.classList.remove("hidden");
         pIn.classList.add("hidden");
-        document.getElementById("authModalTitle").innerHTML = `<i class="fa-solid fa-user-plus" style="color: #0d9488;"></i> Register Student Account`;
+        document.getElementById("authModalTitle").innerHTML = `<i class="fa-solid fa-user-plus" style="color: #0d9488;"></i> <span>${tr("auth_modal_register")}</span>`;
       }
     }
 
     function selectRole(role) {
       activeRole = role;
+      const tr = (k) => (typeof t === "function" ? t(k) : k);
+      if (typeof clearAuthErrors === 'function') clearAuthErrors();
       const bStu = document.getElementById("roleBtnStudent");
       const bDept = document.getElementById("roleBtnDept");
       const bAdm = document.getElementById("roleBtnAdmin");
@@ -681,23 +696,20 @@
         bStu.style.backgroundColor = "#f0fdfa";
         bStu.style.borderColor = "#0d9488";
         bStu.style.color = "#0d9488";
-        uLabel.innerText = "Roll Number or Username";
-        uInput.value = "student";
-        pInput.value = "student123";
+        uLabel.innerText = tr("auth_lbl_stu");
+        uInput.placeholder = tr("auth_ph_stu");
       } else if (role === "department") {
         bDept.style.backgroundColor = "#f0f9ff";
         bDept.style.borderColor = "#0284c7";
         bDept.style.color = "#0284c7";
-        uLabel.innerText = "Department Operator Username";
-        uInput.value = "dept_it";
-        pInput.value = "it123";
+        uLabel.innerText = tr("auth_lbl_dept");
+        uInput.placeholder = tr("auth_ph_dept");
       } else {
         bAdm.style.backgroundColor = "#faf5ff";
         bAdm.style.borderColor = "#7c3aed";
         bAdm.style.color = "#7c3aed";
-        uLabel.innerText = "Administration Official Username";
-        uInput.value = "admin";
-        pInput.value = "admin123";
+        uLabel.innerText = tr("auth_lbl_admin");
+        uInput.placeholder = tr("auth_ph_admin");
       }
     }
 
@@ -705,7 +717,7 @@
       e.preventDefault();
       const u = document.getElementById("signInUsername").value.trim();
       const p = document.getElementById("signInPassword").value.trim();
-      handleLogin(u, p);
+      handleLogin(u, p, activeRole);
     }
 
     function onSignUpSubmit(e) {
@@ -722,23 +734,75 @@
       handleSignup(payload);
     }
 
-    // Direct Launch Helpers
+    // Student portal entry requires authenticated session (or prompts login)
     function launchDemoStudent(pendingSection = null) {
-      if (pendingSection) sessionStorage.setItem("pending_section", pendingSection);
-      quickLogin('student', 'student123');
+      if (pendingSection) {
+        sessionStorage.setItem("pending_section", pendingSection);
+      } else {
+        sessionStorage.removeItem("pending_section");
+      }
+      const user = (typeof getCurrentUser === "function") ? getCurrentUser() : null;
+      if (user && user.role === "student" && user.verified_auth === true) {
+        window.location.href = getPortalUrl("student");
+        return;
+      }
+      openAuthModal('student', 'signin');
     }
 
-    function launchDemoDept(deptUsername = 'dept_it') {
-      quickLogin(deptUsername, deptUsername === 'dept_it' ? 'it123' : 'maint123');
-    }
-
-    function launchDemoAdmin() {
-      quickLogin('admin', 'admin123');
-    }
+    // Open login modal automatically if redirected from a protected portal
+    (function checkPendingAuthPrompt() {
+      const rolePrompt = sessionStorage.getItem("pending_auth_role");
+      if (rolePrompt) {
+        sessionStorage.removeItem("pending_auth_role");
+        openAuthModal(rolePrompt, 'signin');
+      }
+    })();
 
     // QR Modal
+    async function loadQrStandeeInfo(customUrl = "") {
+      const linkEl = document.getElementById("qrResolvedUrl");
+      const imgEl = document.getElementById("qrCodeImg");
+      const qs = customUrl ? `?url=${encodeURIComponent(customUrl)}` : "";
+      try {
+        const res = await fetch(`${API_BASE}/qr/info${qs}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          if (linkEl) linkEl.innerText = err.detail || "Invalid URL";
+          return;
+        }
+        const info = await res.json();
+        if (linkEl && info.portal_url) {
+          linkEl.innerText = info.portal_url;
+          linkEl.href = info.portal_url;
+        }
+        if (imgEl && info.qr_image_url) {
+          imgEl.src = info.qr_image_url + (info.qr_image_url.includes("?") ? "&" : "?") + "t=" + Date.now();
+        }
+      } catch (e) {
+        if (linkEl) linkEl.innerText = window.location.origin + "/";
+      }
+    }
     function openQrModal() {
       document.getElementById("qrModal").classList.remove("hidden");
+      const customEl = document.getElementById("qrCustomUrlInput");
+      loadQrStandeeInfo(customEl ? customEl.value.trim() : "");
+    }
+    function refreshQrWithCustomUrl() {
+      const customEl = document.getElementById("qrCustomUrlInput");
+      const val = customEl ? customEl.value.trim() : "";
+      loadQrStandeeInfo(val);
+    }
+    async function copyQrPortalUrl() {
+      const linkEl = document.getElementById("qrResolvedUrl");
+      const btn = document.getElementById("qrCopyBtn");
+      if (!linkEl) return;
+      try {
+        await navigator.clipboard.writeText(linkEl.innerText);
+        if (btn) {
+          btn.innerHTML = `<i class="fa-solid fa-check"></i>`;
+          setTimeout(() => { btn.innerHTML = `<i class="fa-regular fa-copy"></i>`; }, 1500);
+        }
+      } catch (e) {}
     }
     function closeQrModal() {
       document.getElementById("qrModal").classList.add("hidden");
@@ -746,6 +810,10 @@
     function handleQrModalBackdrop(e) {
       if (e.target.id === "qrModal") closeQrModal();
     }
+
+    setGatewayLanguage((typeof getSavedLanguage === "function") ? getSavedLanguage() : "en");
+    loadPublicCampusStats();
   </script>
 </body>
+
 </html>

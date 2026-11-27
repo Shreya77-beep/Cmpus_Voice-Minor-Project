@@ -877,6 +877,7 @@ a {
   font-weight: 800;
   font-size: 0.95rem;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .sidebar-user strong {

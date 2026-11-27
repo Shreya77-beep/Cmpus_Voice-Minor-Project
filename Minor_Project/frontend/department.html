@@ -21,9 +21,9 @@
       <div>
         <div style="display: flex; align-items: center; gap: 8px;">
           <strong style="font-size: 1.15rem; font-weight: 800; color: #f8fafc;">CampusVoice</strong>
-          <span style="font-size: 0.72rem; font-weight: 700; background: #0d9488; color: #ffffff; padding: 2px 8px; border-radius: 6px;" id="headerDeptBadge">Department Staff</span>
+          <span style="font-size: 0.72rem; font-weight: 700; background: #0d9488; color: #ffffff; padding: 2px 8px; border-radius: 6px;" id="headerDeptBadge" data-i18n="dept_badge_default">Department Staff</span>
         </div>
-        <p style="margin: 2px 0 0 0; font-size: 0.76rem; color: #94a3b8;" id="headerDeptSubtitle">Assigned Maintenance & Resolution Unit</p>
+        <p style="margin: 2px 0 0 0; font-size: 0.76rem; color: #94a3b8;" id="headerDeptSubtitle" data-i18n="dept_subtitle_default">Assigned Maintenance & Resolution Unit</p>
       </div>
     </div>
 
@@ -36,12 +36,12 @@
 
       <button type="button" onclick="fetchDepartmentData()" class="btn-secondary btn-small" style="background: #1e293b; border-color: #334155; color: #ffffff !important;" title="Refresh Queue">
         <i class="fa-solid fa-rotate" style="color: #38bdf8;" id="deptRefreshIcon"></i>
-        <span>Refresh</span>
+        <span data-i18n="dept_refresh">Refresh</span>
       </button>
 
       <button type="button" onclick="logout()" class="btn-danger-outline btn-small" style="background: rgba(220,38,38,0.15); border-color: #dc2626;">
         <i class="fa-solid fa-power-off"></i>
-        <span>Sign Out</span>
+        <span data-i18n="sign_out">Sign Out</span>
       </button>
     </div>
   </header>
@@ -52,20 +52,20 @@
     <!-- Department Welcome Hero Card -->
     <div class="welcome-banner" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid #334155;">
       <div>
-        <span style="font-size: 0.72rem; font-weight: 800; background: rgba(255, 255, 255, 0.15); color: #38bdf8; padding: 3px 10px; border-radius: 6px; text-transform: uppercase;">Operations Queue</span>
-        <h2 style="font-size: 1.45rem; font-weight: 800; margin: 6px 0 4px 0;" id="heroDeptTitle">Department Maintenance Queue</h2>
-        <p style="margin: 0; color: #94a3b8; font-size: 0.86rem;">Showing work orders strictly assigned to your department. Assign technicians, update inspection logs, and synchronize student notifications.</p>
+        <span style="font-size: 0.72rem; font-weight: 800; background: rgba(255, 255, 255, 0.15); color: #38bdf8; padding: 3px 10px; border-radius: 6px; text-transform: uppercase;" data-i18n="dept_ops_queue">Operations Queue</span>
+        <h2 style="font-size: 1.45rem; font-weight: 800; margin: 6px 0 4px 0;" id="heroDeptTitle" data-i18n="dept_hero_title">Department Maintenance Queue</h2>
+        <p style="margin: 0; color: #94a3b8; font-size: 0.86rem;" data-i18n="dept_hero_desc">Showing work orders strictly assigned to your department. Assign technicians, update inspection logs, and synchronize student notifications.</p>
       </div>
 
       <!-- Department Filter Switcher -->
       <div style="background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 10px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
-        <span style="font-size: 0.76rem; color: #cbd5e1; font-weight: 600;">Queue:</span>
+        <span style="font-size: 0.76rem; color: #cbd5e1; font-weight: 600;" data-i18n="dept_queue_lbl">Queue:</span>
         <select id="switchDeptSelect" onchange="onSwitchDepartment()" style="background: #ffffff; color: #0f172a; border: none; border-radius: 6px; padding: 6px 10px; font-size: 0.82rem; font-weight: 700; outline: none;">
-          <option value="Maintenance">Maintenance</option>
-          <option value="IT/Network">IT / Network</option>
-          <option value="Hostel">Hostel</option>
-          <option value="Sanitation">Sanitation</option>
-          <option value="Academic">Academic</option>
+          <option value="Maintenance" data-i18n="cat_name_Maintenance">Maintenance</option>
+          <option value="IT/Network" data-i18n="cat_name_IT_Network">IT / Network</option>
+          <option value="Hostel" data-i18n="cat_name_Hostel">Hostel</option>
+          <option value="Sanitation" data-i18n="cat_name_Sanitation">Sanitation</option>
+          <option value="Academic" data-i18n="cat_name_Academic">Academic</option>
         </select>
       </div>
     </div>
@@ -77,9 +77,9 @@
           <i class="fa-solid fa-list-check"></i>
         </div>
         <div class="metric-info">
-          <h4>Unit Work Orders</h4>
+          <h4 data-i18n="dept_card_orders">Unit Work Orders</h4>
           <h3 id="deptStatTotal">--</h3>
-          <small>Total tickets assigned</small>
+          <small data-i18n="dept_card_orders_sub">Total tickets assigned</small>
         </div>
       </div>
 
@@ -88,9 +88,9 @@
           <i class="fa-solid fa-hourglass-half"></i>
         </div>
         <div class="metric-info">
-          <h4>Pending Triage</h4>
+          <h4 data-i18n="dept_card_pending">Pending Triage</h4>
           <h3 id="deptStatPending" style="color: #d97706;">--</h3>
-          <small>Needs technician dispatch</small>
+          <small data-i18n="dept_card_pending_sub">Needs technician dispatch</small>
         </div>
       </div>
 
@@ -99,9 +99,9 @@
           <i class="fa-solid fa-wrench"></i>
         </div>
         <div class="metric-info">
-          <h4>In Progress</h4>
+          <h4 data-i18n="dept_card_progress">In Progress</h4>
           <h3 id="deptStatInProgress" style="color: #0284c7;">--</h3>
-          <small>Under active repair</small>
+          <small data-i18n="dept_card_progress_sub">Under active repair</small>
         </div>
       </div>
 
@@ -110,9 +110,9 @@
           <i class="fa-solid fa-circle-check"></i>
         </div>
         <div class="metric-info">
-          <h4>Resolved Orders</h4>
+          <h4 data-i18n="dept_card_resolved">Resolved Orders</h4>
           <h3 id="deptStatResolved" style="color: #16a34a;">--</h3>
-          <small>Closed and verified</small>
+          <small data-i18n="dept_card_resolved_sub">Closed and verified</small>
         </div>
       </div>
     </div>
@@ -121,16 +121,16 @@
     <div class="clean-card" style="overflow: hidden;">
       <div style="padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: #ffffff;">
         <div>
-          <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #0f172a;">Active Department Work Orders</h3>
-          <p style="margin: 2px 0 0 0; color: #64748b; font-size: 0.8rem;">Select any ticket to dispatch technician or update inspection status</p>
+          <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #0f172a;" data-i18n="dept_table_title">Active Department Work Orders</h3>
+          <p style="margin: 2px 0 0 0; color: #64748b; font-size: 0.8rem;" data-i18n="dept_table_sub">Select any ticket to dispatch technician or update inspection status</p>
         </div>
 
         <div>
           <select id="deptStatusFilter" onchange="fetchDepartmentData()" style="padding: 6px 12px; font-size: 0.82rem; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 600;">
-            <option value="All">All Statuses</option>
-            <option value="Pending">Pending</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Resolved">Resolved</option>
+            <option value="All" data-i18n="dept_filter_all">All Statuses</option>
+            <option value="Pending" data-i18n="status_Pending">Pending</option>
+            <option value="In Progress" data-i18n="status_In_Progress">In Progress</option>
+            <option value="Resolved" data-i18n="status_Resolved">Resolved</option>
           </select>
         </div>
       </div>
@@ -139,26 +139,29 @@
         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.82rem;">
           <thead>
             <tr style="background: #fafbfc; border-bottom: 1px solid var(--border); color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.04em;">
-              <th style="padding: 12px 18px;">Ticket ID</th>
-              <th style="padding: 12px 18px;">Problem Description</th>
-              <th style="padding: 12px 18px;">Location</th>
-              <th style="padding: 12px 18px;">Urgency & Priority</th>
-              <th style="padding: 12px 18px;">Status</th>
-              <th style="padding: 12px 18px;">Assigned Staff</th>
-              <th style="padding: 12px 18px;">Inspection Notes</th>
-              <th style="padding: 12px 18px; text-align: right;">Action</th>
+              <th style="padding: 12px 18px;" data-i18n="th_ticket_id">Ticket ID</th>
+              <th style="padding: 12px 18px;" data-i18n="th_problem_desc">Problem Description</th>
+              <th style="padding: 12px 18px;" data-i18n="th_location">Location</th>
+              <th style="padding: 12px 18px;" data-i18n="th_urgency_prio">Urgency & Priority</th>
+              <th style="padding: 12px 18px;" data-i18n="th_status">Status</th>
+              <th style="padding: 12px 18px;" data-i18n="th_assigned_staff">Assigned Staff</th>
+              <th style="padding: 12px 18px;" data-i18n="th_notes">Inspection Notes</th>
+              <th style="padding: 12px 18px; text-align: right;" data-i18n="th_action">Action</th>
             </tr>
           </thead>
           <tbody id="deptTableBody" style="divide-y: 1px solid var(--border);">
             <tr>
-              <td colspan="8" style="padding: 40px; text-align: center; color: #94a3b8;">Loading department work orders...</td>
+              <td colspan="8" style="padding: 40px; text-align: center; color: #94a3b8;" data-i18n="dept_loading">Loading department work orders...</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <div style="padding: 12px 20px; background: #fafbfc; border-top: 1px solid var(--border); font-size: 0.76rem; color: #64748b;" id="deptCountLabel">
-        Showing records
+      <div style="padding: 12px 20px; background: #fafbfc; border-top: 1px solid var(--border); font-size: 0.76rem; color: #64748b; display: flex; justify-content: space-between; align-items: center;">
+        <span id="deptCountLabel">Showing records</span>
+        <span id="deptLiveStatus" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: #0d9488;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Live Sync
+        </span>
       </div>
     </div>
 
@@ -168,49 +171,62 @@
   <div id="deptUpdateModal" class="medbrief-modal-overlay hidden" onclick="handleDeptModalBackdrop(event)">
     <div class="medbrief-modal-card">
       <div class="medbrief-modal-header">
-        <h3><i class="fa-solid fa-wrench" style="color: #0d9488;"></i> Update Work Order & Assign Technician</h3>
+        <h3><i class="fa-solid fa-wrench" style="color: #0d9488;"></i> <span data-i18n="dept_modal_title">Update Work Order & Assign Technician</span></h3>
         <button type="button" class="medbrief-modal-close" onclick="closeDeptModal()">&times;</button>
       </div>
 
       <div class="medbrief-modal-body">
         <form onsubmit="handleDeptModalSubmit(event)" class="modal-form">
           <div>
-            <label>Work Order Ticket ID</label>
+            <label data-i18n="dept_modal_tid">Work Order Ticket ID</label>
             <input id="modalDeptTicketId" type="text" readonly style="background: #f8fafc; font-family: var(--font-mono); font-weight: 700; color: #0d9488;">
           </div>
 
           <div>
-            <label>Status Progression</label>
+            <label data-i18n="dept_modal_prog">Status Progression</label>
             <select id="modalDeptStatus" style="font-weight: 600;">
-              <option value="Pending">Pending Review</option>
-              <option value="In Progress">In Progress (Technician Dispatched)</option>
-              <option value="Resolved">Resolved (Work Completed)</option>
-              <option value="Rejected">Rejected</option>
+              <option value="Pending" data-i18n="dept_opt_pending">Pending Review</option>
+              <option value="Assigned" data-i18n="dept_opt_assigned">Assigned to Unit</option>
+              <option value="In Progress" data-i18n="dept_opt_progress">In Progress (Technician Dispatched)</option>
+              <option value="Resolved" data-i18n="dept_opt_resolved">Resolved (Work Completed)</option>
+              <option value="Rejected" data-i18n="dept_opt_rejected">Rejected</option>
             </select>
           </div>
 
           <div>
-            <label>Assigned Technician Name *</label>
-            <input id="modalDeptTechnician" type="text" required placeholder="e.g. Vikram Singh (Network Admin)">
+            <label data-i18n="dept_modal_tech">Assigned Technician Name *</label>
+            <input id="modalDeptTechnician" type="text" required placeholder="e.g. Vikram Singh (Network Admin)" data-i18n-placeholder="dept_modal_tech_ph">
           </div>
 
           <div>
-            <label>Inspection Findings & Action Log</label>
-            <textarea id="modalDeptNotes" rows="3" placeholder="Enter inspection notes or parts replaced..."></textarea>
+            <label data-i18n="dept_modal_notes">Inspection Findings & Action Log</label>
+            <textarea id="modalDeptNotes" rows="3" placeholder="Enter inspection notes or parts replaced..." data-i18n-placeholder="dept_modal_notes_ph"></textarea>
+          </div>
+
+          <div id="modalDeptPhotoWrap" class="hidden" style="background: #fafbfc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px;">
+            <label style="font-size: 0.76rem; color: #475569; display: block; margin-bottom: 6px;">Attached Evidence Photo</label>
+            <img id="modalDeptPhoto" src="" alt="Evidence" style="max-height: 180px; width: auto; border-radius: 8px; border: 1px solid #cbd5e1; display: block;">
           </div>
 
           <div class="modal-actions">
-            <button type="button" class="btn-secondary btn-small" onclick="closeDeptModal()">Cancel</button>
-            <button type="submit" class="btn-primary btn-small">Save & Update Timeline</button>
+            <button type="button" class="btn-secondary btn-small" onclick="closeDeptModal()" data-i18n="btn_cancel">Cancel</button>
+            <button type="submit" class="btn-primary btn-small" data-i18n="dept_modal_save">Save & Update Timeline</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 
+  <!-- Real-Time Floating Toast Alert Container -->
+  <div id="toastAlertContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 60; display: flex; flex-direction: column; gap: 10px; pointer-events: none;"></div>
+
+  <script src="i18n.js"></script>
   <script src="auth.js"></script>
   <script src="department.js"></script>
   <script>
+    if (typeof applyPageTranslations === "function" && typeof getSavedLanguage === "function") {
+      applyPageTranslations(getSavedLanguage());
+    }
     function handleDeptModalBackdrop(e) {
       if (e.target.id === 'deptUpdateModal') closeDeptModal();
     }

@@ -31,5 +31,12 @@ if __name__ == "__main__":
     # Launch browser automatically
     threading.Thread(target=open_browser, daemon=True).start()
 
-    # Start FastAPI / Uvicorn server
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True, app_dir=str(BACKEND_DIR))
+    # Start FastAPI / Uvicorn server on all interfaces (0.0.0.0) so mobile QR / LAN devices can connect
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        reload_excludes=["*.db", "*.db-*", ".secret_key", "*.log"],
+        app_dir=str(BACKEND_DIR),
+    )

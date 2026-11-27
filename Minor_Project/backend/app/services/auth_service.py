@@ -1,30 +1,37 @@
 from typing import Optional, Dict, Any, List
+from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
+from app.core.security import hash_password, is_password_hashed, verify_password
 from app.models.user import User, UserRole
 from app.schemas.user import LoginRequest, UserResponse, LoginResponse, StudentSignupRequest
 
 class AuthService:
-    def authenticate(self, db: Session, login_data: LoginRequest) -> Optional[User]:
-        u = login_data.username.strip().lower()
-        p = login_data.password.strip()
-
-        # Look up by username or student_id
-        user = db.query(User).filter(
-            (User.username.ilike(u)) | (User.student_id.ilike(u))
+    def find_user(self, db: Session, identifier: str) -> Optional[User]:
+        u = (identifier or "").strip().lower()
+        if not u:
+            return None
+        # Look up by username, student_id, or email
+        return db.query(User).filter(
+            (User.username.ilike(u)) | (User.student_id.ilike(u)) | (User.email.ilike(u))
         ).first()
 
-        if user and user.password == p:
+    def authenticate(self, db: Session, login_data: LoginRequest) -> Optional[User]:
+        p = login_data.password.strip()
+        user = self.find_user(db, login_data.username)
+
+        if user and verify_password(p, user.password):
             return user
         return None
 
     def register_student(self, db: Session, data: StudentSignupRequest) -> User:
         sid = data.student_id.strip().upper()
         email = data.email.strip().lower()
+        uname = sid.lower()
 
-        # Check existing by student_id or email
+        # Check existing by student_id, email, or username
         existing = db.query(User).filter(
-            (User.student_id == sid) | (User.email == email)
+            (User.student_id == sid) | (User.email == email) | (User.username == uname)
         ).first()
 
         if existing:
@@ -34,12 +41,13 @@ class AuthService:
             )
 
         new_user = User(
-            username=sid.lower(),
-            password=data.password.strip(),
+            username=uname,
+            password=hash_password(data.password.strip()),
             full_name=data.full_name.strip(),
             role=UserRole.STUDENT.value,
             student_id=sid,
             department_name=data.department_name.strip(),
+            semester=data.semester.strip() if data.semester else "1st Semester",
             email=email,
             contact=data.contact.strip() if data.contact else None
         )
@@ -69,8 +77,49 @@ class AuthService:
             return "/department"
         return "/student"
 
+    def migrate_plaintext_passwords(self, db: Session):
+        """Ensure all stored passwords (including seeded demo accounts) use salted PBKDF2 hashes."""
+        users = db.query(User).all()
+        updated = False
+        for u in users:
+            if not is_password_hashed(u.password):
+                u.password = hash_password(u.password)
+                updated = True
+        if updated:
+            db.commit()
+
+    def ensure_schema(self, db: Session):
+        """Ensure additive columns exist on pre-existing SQLite databases."""
+        engine = db.get_bind()
+        insp = inspect(engine)
+        if "users" in insp.get_table_names():
+            cols = [c["name"] for c in insp.get_columns("users")]
+            if "semester" not in cols:
+                db.execute(text("ALTER TABLE users ADD COLUMN semester VARCHAR(50)"))
+                db.execute(text("UPDATE users SET semester = '6th Semester' WHERE username = 'student' AND semester IS NULL"))
+                db.commit()
+            if "avatar_url" not in cols:
+                db.execute(text("ALTER TABLE users ADD COLUMN avatar_url TEXT"))
+                db.commit()
+
+    def update_avatar(self, db: Session, user: User, avatar_url: Optional[str]) -> User:
+        if avatar_url is None or not avatar_url.strip():
+            user.avatar_url = None
+        else:
+            cleaned = avatar_url.strip()
+            if not cleaned.startswith("data:image/"):
+                raise HTTPException(status_code=400, detail="Invalid image format. Please upload a valid image file.")
+            if len(cleaned) > 2_000_000:
+                raise HTTPException(status_code=400, detail="Image size is too large. Please choose a smaller photo.")
+            user.avatar_url = cleaned
+        db.commit()
+        db.refresh(user)
+        return user
+
     def seed_users(self, db: Session):
+        self.ensure_schema(db)
         if db.query(User).count() > 0:
+            self.migrate_plaintext_passwords(db)
             return
 
         demo_users = [
@@ -82,6 +131,7 @@ class AuthService:
                 "role": UserRole.STUDENT.value,
                 "student_id": "STU-2023-01",
                 "department_name": "Computer Science & Engineering",
+                "semester": "6th Semester",
                 "email": "rahul.sharma@campus.edu.in",
                 "contact": "+91 98765 43210"
             },
@@ -135,7 +185,9 @@ class AuthService:
         ]
 
         for item in demo_users:
-            user = User(**item)
+            item_copy = dict(item)
+            item_copy["password"] = hash_password(item_copy["password"])
+            user = User(**item_copy)
             db.add(user)
         db.commit()
 

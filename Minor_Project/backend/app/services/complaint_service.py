@@ -5,10 +5,14 @@ import datetime
 from typing import Optional, List, Dict, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, func
+from app.core.realtime import realtime_hub
 from app.models.complaint import Complaint, ComplaintStatus, PriorityLevel
 from app.schemas.complaint import ComplaintCreate, ComplaintStatusUpdate, TimelineEvent
 
 class ComplaintService:
+    def _now_label(self) -> str:
+        return datetime.datetime.now().strftime("%d %b · %I:%M %p")
+
     def generate_ticket_id(self, db: Session) -> str:
         last_complaint = db.query(Complaint).order_by(desc(Complaint.id)).first()
         if last_complaint:
@@ -43,7 +47,7 @@ class ComplaintService:
 
     def create_complaint(self, db: Session, complaint_in: ComplaintCreate) -> Complaint:
         ticket_id = self.generate_ticket_id(db)
-        now_str = datetime.datetime.now().strftime("%d %b · %I:%M %p")
+        now_str = self._now_label()
 
         # Duplicate detection check
         duplicate_ticket = self.check_duplicate(
@@ -54,12 +58,15 @@ class ComplaintService:
         )
 
         duplicate_id = duplicate_ticket.ticket_id if duplicate_ticket else None
+        sid = complaint_in.student_id or "CAMPUS-USER"
+        sname = complaint_in.student_name or "Student"
+        sdept = complaint_in.student_department or "Academic Department"
 
         # Initial Timeline Events
         initial_timeline = [
             {
                 "title": "Complaint Registered",
-                "description": f"Grievance recorded via {complaint_in.student_name} ({complaint_in.student_id}).",
+                "description": f"Grievance recorded via {sname} ({sid}).",
                 "timestamp": now_str,
                 "status": "Pending"
             },
@@ -79,12 +86,13 @@ class ComplaintService:
                 "status": "In Progress"
             })
 
+        now_utc = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
         db_complaint = Complaint(
             ticket_id=ticket_id,
-            student_id=complaint_in.student_id or "STU-2023-01",
-            student_name=complaint_in.student_name or "Rahul Sharma",
-            student_department=complaint_in.student_department or "Computer Science & Engineering",
-            student_contact=complaint_in.student_contact or "+91 98765 43210",
+            student_id=sid,
+            student_name=sname,
+            student_department=sdept,
+            student_contact=complaint_in.student_contact,
             title=complaint_in.title or complaint_in.issue[:50],
             issue=complaint_in.issue,
             raw_query=complaint_in.raw_query,
@@ -98,7 +106,9 @@ class ComplaintService:
             image_url=complaint_in.image_url,
             assigned_technician=f"{complaint_in.category} Duty Officer",
             admin_notes=f"Linked to existing ticket {duplicate_id}" if duplicate_id else None,
-            timeline_json=json.dumps(initial_timeline)
+            timeline_json=json.dumps(initial_timeline),
+            created_at=now_utc,
+            updated_at=now_utc,
         )
         db.add(db_complaint)
         db.commit()
@@ -117,6 +127,22 @@ class ComplaintService:
             )
         except Exception as e:
             print(f"[ComplaintService] Notification creation error: {e}")
+
+        # Push real-time WebSocket update to student, department queue, and admin
+        realtime_hub.publish_sync(
+            "complaint_created",
+            {
+                "ticket_id": db_complaint.ticket_id,
+                "title": db_complaint.title or db_complaint.issue,
+                "category": db_complaint.category,
+                "priority": db_complaint.priority,
+                "status": db_complaint.status,
+                "location": db_complaint.location,
+                "student_name": db_complaint.student_name,
+            },
+            target_student_id=db_complaint.student_id,
+            target_category=db_complaint.category,
+        )
 
         return db_complaint
 
@@ -161,9 +187,10 @@ class ComplaintService:
             complaint.assigned_technician = update_in.assigned_technician
         if update_in.admin_notes:
             complaint.admin_notes = update_in.admin_notes
+        complaint.updated_at = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
 
         # Append new timeline step
-        now_str = datetime.datetime.now().strftime("%d %b · %I:%M %p")
+        now_str = self._now_label()
         timeline = self.get_timeline(complaint)
         timeline.append({
             "title": f"Status updated to {update_in.status}",
@@ -192,6 +219,21 @@ class ComplaintService:
         except Exception as e:
             print(f"[ComplaintService] Status update notification error: {e}")
 
+        # Push live WebSocket update to Student, Department, and Admin
+        realtime_hub.publish_sync(
+            "complaint_updated",
+            {
+                "ticket_id": complaint.ticket_id,
+                "title": complaint.title or complaint.issue,
+                "category": complaint.category,
+                "status": complaint.status,
+                "assigned_technician": complaint.assigned_technician,
+                "admin_notes": complaint.admin_notes,
+            },
+            target_student_id=complaint.student_id,
+            target_category=complaint.category,
+        )
+
         return complaint
 
     def get_timeline(self, complaint: Complaint) -> List[Dict[str, Any]]:
@@ -202,21 +244,32 @@ class ComplaintService:
         except Exception:
             return []
 
-    def get_analytics(self, db: Session) -> Dict[str, Any]:
-        total = db.query(Complaint).count()
-        pending = db.query(Complaint).filter(Complaint.status == ComplaintStatus.PENDING.value).count()
-        in_progress = db.query(Complaint).filter(Complaint.status == ComplaintStatus.IN_PROGRESS.value).count()
-        resolved = db.query(Complaint).filter(Complaint.status == ComplaintStatus.RESOLVED.value).count()
-        critical = db.query(Complaint).filter(Complaint.priority.in_([PriorityLevel.CRITICAL.value, PriorityLevel.HIGH.value])).count()
+    def get_analytics(
+        self,
+        db: Session,
+        student_id: Optional[str] = None,
+        category: Optional[str] = None
+    ) -> Dict[str, Any]:
+        base = db.query(Complaint)
+        if student_id:
+            base = base.filter(Complaint.student_id == student_id)
+        if category:
+            base = base.filter(Complaint.category == category)
+
+        total = base.count()
+        pending = base.filter(Complaint.status == ComplaintStatus.PENDING.value).count()
+        in_progress = base.filter(Complaint.status.in_([ComplaintStatus.IN_PROGRESS.value, ComplaintStatus.ASSIGNED.value])).count()
+        resolved = base.filter(Complaint.status == ComplaintStatus.RESOLVED.value).count()
+        critical = base.filter(Complaint.priority.in_([PriorityLevel.CRITICAL.value, PriorityLevel.HIGH.value])).count()
 
         # Breakdown by Department / Category
         category_counts = {}
-        for cat, cnt in db.query(Complaint.category, func.count(Complaint.id)).group_by(Complaint.category).all():
+        for cat, cnt in base.with_entities(Complaint.category, func.count(Complaint.id)).group_by(Complaint.category).all():
             category_counts[cat] = cnt
 
         # Breakdown by Sentiment
         sentiment_counts = {}
-        for sent, cnt in db.query(Complaint.sentiment, func.count(Complaint.id)).group_by(Complaint.sentiment).all():
+        for sent, cnt in base.with_entities(Complaint.sentiment, func.count(Complaint.id)).group_by(Complaint.sentiment).all():
             sentiment_counts[sent or "Neutral"] = cnt
 
         return {

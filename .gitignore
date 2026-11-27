@@ -15,8 +15,18 @@ venv/
 env/
 ENV/
 
-# Environment variables
+# Environment variables & secrets
 .env
+.secret_key
+
+# SQLite runtime WAL/SHM journal files
+*.db-wal
+*.db-shm
+*.db-journal
+
+# Archify transient locks/pending journals
+.archify-delivery-lock.json
+*.delivery-pending.json
 
 # Editor directories and files
 .vscode/

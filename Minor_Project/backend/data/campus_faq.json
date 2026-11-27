@@ -28,5 +28,11 @@
     "question": "Where is the campus medical dispensary or health center?",
     "answer": "The Campus Health Center is located behind Hostel Block A. For emergencies, contact the campus ambulance at 011-2345678 or call the security control room.",
     "keywords": ["medical", "doctor", "health center", "hospital", "emergency", "ambulance", "dispensary"]
+  },
+  {
+    "category": "Hostel & Facilities",
+    "question": "How do I request hostel room maintenance or plumbing?",
+    "answer": "Lodge a grievance under the 'Hostel' category on CampusVoice or contact the Hostel Warden office in Block A ground floor (Ext. 402).",
+    "keywords": ["hostel", "room", "maintenance", "plumbing", "warden", "mess", "water cooler"]
   }
 ]

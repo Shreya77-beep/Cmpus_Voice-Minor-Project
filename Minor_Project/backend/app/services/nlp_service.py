@@ -195,26 +195,30 @@ class HybridNLPService:
         )
 
     def _detect_category(self, q: str) -> str:
-        if any(w in q for w in ["ac", "air conditioner", "fan", "light", "projector", "bench", "desk", "door", "window", "पंखा", "লাইট"]):
+        if any(w in q for w in ["ac", "air conditioner", "fan", "light", "projector", "bench", "desk", "door", "window", "पंखा", "एसी", "लाइट", "प्रोजेक्टर", "লাইট", "এসি", "পাখা", "প্রজেক্টর"]):
             return "Maintenance"
-        if any(w in q for w in ["wifi", "wi-fi", "internet", "computer", "lab pc", "network", "portal", "login", "printer", "इंटरनेट"]):
+        if any(w in q for w in ["wifi", "wi-fi", "internet", "computer", "lab pc", "network", "portal", "login", "printer", "इंटरनेट", "वाई-फाई", "वाई", "नेटवर्क", "ইন্টাरনেট", "ইন্টারনেট", "ওয়াই-ফাই", "নেটওয়ার্ক"]):
             return "IT/Network"
-        if any(w in q for w in ["water", "tap", "washroom", "toilet", "bathroom", "leak", "leakage", "smell", "dirty", "पानी", "জল"]):
+        if any(w in q for w in ["water", "tap", "washroom", "toilet", "bathroom", "leak", "leakage", "smell", "dirty", "पानी", "टॉयलेट", "वाशरूम", "लीक", "रिसाव", "गंदा", "জল", "টয়লেট", "ওয়াশরুম", "পরিষ্কার"]):
             return "Sanitation"
-        if any(w in q for w in ["hostel", "mess", "food", "canteen", "room 1", "room 2", "হস্টেল"]):
+        if any(w in q for w in ["hostel", "mess", "food", "canteen", "cooler", "room 1", "room 2", "हॉस्टल", "मेस", "कूलर", "হস্টেল", "হোস্টেল", "মেস", "কুলার"]):
             return "Hostel"
-        if any(w in q for w in ["exam", "professor", "class", "marks", "attendance", "परीक्षा"]):
+        if any(w in q for w in ["exam", "professor", "class", "marks", "attendance", "परीक्षा", "অধ্যাপক", "পরীক্ষা"]):
             return "Academic"
         return "Maintenance"
 
     def _extract_location(self, text: str) -> str:
-        match = re.search(r"\b(classroom\s+\w+|room\s+\w+|lab\s+\w+|hostel\s+(?:block\s+)?\w+|library|canteen|washroom|auditorium|\d+(?:st|nd|rd|th)?\s+floor)\b", text, re.IGNORECASE)
+        match = re.search(
+            r"(?:classroom|room|lab|hostel(?:\s+block)?|कक्षा|कमरा|हॉस्टल(?:\s+ब्लॉक)?|রুম|ক্লাসরুম|হোস্টেল(?:\s+ব্লক)?)\s+[a-zA-Z0-9\-]+|\b(?:library|canteen|washroom|auditorium|\d+(?:st|nd|rd|th)?\s+floor)\b",
+            text,
+            re.IGNORECASE,
+        )
         if match:
-            return match.group(1).title()
+            return match.group(0).strip().title()
         return "Campus Area"
 
     def _extract_issue(self, text: str) -> str:
-        match = re.search(r"\b(ac|projector|fan|light|wifi|wi-fi|water supply|tap|computer)\s+(?:is\s+)?(not working|broken|leaking|damaged|flickering|down|off)\b", text, re.IGNORECASE)
+        match = re.search(r"\b(ac|projector|fan|light|wifi|wi-fi|water supply|tap|computer|water cooler)\s+(?:is\s+)?(not working|broken|leaking|damaged|flickering|down|off)\b", text, re.IGNORECASE)
         if match:
             return f"{match.group(1).title()} {match.group(2).lower()}"
         return text.strip()
@@ -227,7 +231,7 @@ class HybridNLPService:
         factors = []
 
         # 1. Safety Hazards & Life Safety (Highest Urgency)
-        hazard_words = ["spark", "smoke", "short circuit", "fire", "danger", "electric shock", "gas leak", "hazard", "ceiling falling"]
+        hazard_words = ["spark", "smoke", "short circuit", "fire", "danger", "electric shock", "gas leak", "hazard", "ceiling falling", "चिंगारी", "शॉर्ट सर्किट", "আগুন", "বিদ্যুৎ"]
         if any(w in q for w in hazard_words):
             score += 55
             sentiment = "Urgent"
@@ -235,7 +239,7 @@ class HybridNLPService:
             factors.append("Safety / Electrical Hazard detected (+55)")
 
         # 2. Critical Utilities Interruption (Water, Power, Sanitation)
-        utility_words = ["no water", "water supply", "tank empty", "blackout", "sewage overflow", "toilet blocked", "पानी बंद", "জল নেই"]
+        utility_words = ["no water", "water supply", "tank empty", "blackout", "sewage overflow", "toilet blocked", "leaking water", "पानी बंद", "लीक", "रिसाव", "জল নেই", "জল পড়"]
         if any(w in q for w in utility_words):
             score += 40
             sentiment = "Urgent"
@@ -243,7 +247,7 @@ class HybridNLPService:
             factors.append("Essential utility breakdown (+40)")
 
         # 3. Frustrated Tone / Repeated Failure
-        frustrated_words = ["again", "constantly", "still not fixed", "third time", "useless", "disaster", "horrible", "unacceptable", "how many times", "बार बार", "আবার"]
+        frustrated_words = ["again", "constantly", "still not fixed", "third time", "useless", "disaster", "horrible", "unacceptable", "how many times", "बार बार", "আবার", "ক্রমাগত"]
         if any(w in q for w in frustrated_words):
             score += 25
             sentiment = "Frustrated"
@@ -251,14 +255,14 @@ class HybridNLPService:
             factors.append("Repeated occurrence / Student frustration expressed (+25)")
 
         # 4. Immediate Urgency & Time Pressure
-        urgent_adverbs = ["urgent", "immediately", "right now", "emergency", "severe", "critical", "तुरंत", "জরুরি"]
+        urgent_adverbs = ["urgent", "immediately", "right now", "emergency", "severe", "critical", "very hot", "तुरंत", "बहुत गर्म", "জরুরি", "খুব গরম"]
         if any(w in q for w in urgent_adverbs):
             score += 20
             if sentiment == "Neutral": sentiment = "Urgent"
             factors.append("Urgent time-critical adverb specified (+20)")
 
         # 5. Academic Exam / Classroom Disruption
-        academic_urgency = ["exam", "test", "viva", "class in progress", "lecture now", "studying"]
+        academic_urgency = ["exam", "test", "viva", "class in progress", "lecture now", "studying", "classroom", "कक्षा", "পরীক্ষা", "ক্লাসরুম"]
         if any(w in q for w in academic_urgency):
             score += 20
             if sentiment == "Neutral": sentiment = "Concerned"

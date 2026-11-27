@@ -4,6 +4,7 @@ from typing import Optional
 class LoginRequest(BaseModel):
     username: str
     password: str
+    expected_role: Optional[str] = Field(None, description="Optional portal role selected in login form")
 
 class StudentSignupRequest(BaseModel):
     full_name: str = Field(..., min_length=2, description="Student's official name")
@@ -21,11 +22,17 @@ class UserResponse(BaseModel):
     role: str
     department_name: Optional[str] = None
     student_id: Optional[str] = None
+    semester: Optional[str] = None
     email: Optional[str] = None
     contact: Optional[str] = None
+    avatar_url: Optional[str] = None
+
+class AvatarUpdateRequest(BaseModel):
+    avatar_url: Optional[str] = Field(None, description="Data URL of uploaded profile photo, or null to clear")
 
 class LoginResponse(BaseModel):
     success: bool
     message: str
     user: Optional[UserResponse] = None
     redirect_url: str
+    access_token: Optional[str] = None

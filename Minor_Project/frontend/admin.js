@@ -1,5 +1,5 @@
 // CampusVoice: Administration & Maintenance Portal Controller
-const API_BASE = "/api";
+// API_BASE is provided by auth.js
 
 // Elements
 const statTotal = document.getElementById("statTotal");
@@ -23,80 +23,74 @@ const modalTechnicianInput = document.getElementById("modalTechnicianInput");
 const modalNotesText = document.getElementById("modalNotesText");
 const noticeModal = document.getElementById("noticeModal");
 
-let rawComplaints = [
-  {
-    ticket_id: "CV1020",
-    student_id: "STU-2023-01",
-    student_name: "Rahul Sharma",
-    category: "IT/Network",
-    title: "Library Wi-Fi Constant Disconnections",
-    issue: "Library Wi-Fi disconnecting frequently",
-    location: "Central Library - 2nd Floor",
-    priority: "Medium",
-    status: "In Progress",
-    sentiment: "Frustrated",
-    urgency_score: 65,
-    assigned_technician: "Vikram Singh (Network Admin)",
-    admin_notes: "Access Point AP-04 rebooted; firmware update scheduled tonight.",
-    created_at: new Date(Date.now() - 3600000 * 24).toISOString()
-  },
-  {
-    ticket_id: "CV1021",
-    student_id: "STU-2023-42",
-    student_name: "Aman Verma",
-    category: "Hostel",
-    title: "Water Cooler Breakdown & Leakage",
-    issue: "Water cooler not cooling & water leak",
-    location: "Hostel Block B - Floor 2",
-    priority: "High",
-    status: "Pending",
-    sentiment: "Urgent",
-    urgency_score: 85,
-    assigned_technician: "Plumbing Maintenance Unit",
-    admin_notes: "Plumber scheduled for inspection at 3:00 PM.",
-    created_at: new Date(Date.now() - 3600000 * 12).toISOString()
-  },
-  {
-    ticket_id: "CV1022",
-    student_id: "STU-2023-01",
-    student_name: "Rahul Sharma",
-    category: "Maintenance",
-    title: "Projector Bulb Burnout in CSE Seminar Hall",
-    issue: "Projector bulb flickering and burnout",
-    location: "Academic Block A - Room 204",
-    priority: "Medium",
-    status: "Resolved",
-    sentiment: "Concerned",
-    urgency_score: 72,
-    assigned_technician: "Ramesh Chand (Audiovisual Cell)",
-    admin_notes: "Bulb replaced and tested with HDMI input.",
-    created_at: new Date(Date.now() - 3600000 * 48).toISOString()
-  },
-  {
-    ticket_id: "CV1023",
-    student_id: "STU-2023-88",
-    student_name: "Pooja Roy",
-    category: "Sanitation",
-    title: "Washroom Tap Leakage Block C",
-    issue: "Continuous tap water leakage",
-    location: "Block C - 1st Floor Washroom",
-    priority: "Low",
-    status: "Pending",
-    sentiment: "Neutral",
-    urgency_score: 35,
-    assigned_technician: "Sanitation Duty Staff",
-    admin_notes: "Washer replacement requested.",
-    created_at: new Date(Date.now() - 3600000 * 6).toISOString()
-  }
-];
+let rawComplaints = [];
+let adminPollTimer = null;
 
 // Initialize on page load with readyState fallback
-function initAdmin() {
-  fetchDashboardData();
+async function initAdmin() {
+  const activeUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+  if (!activeUser || !activeUser.verified_auth || activeUser.role !== 'admin') {
+    return;
+  }
+  const verifiedUser = await verifyServerSession(['admin']);
+  if (!verifiedUser) return;
+  const adminNameEl = document.getElementById("adminName");
+  if (adminNameEl) adminNameEl.innerText = verifiedUser.full_name || "Administrator";
+
+  await fetchDashboardData();
   
   if (searchInput) searchInput.addEventListener("input", debounce(fetchComplaintsTable, 300));
   if (categoryFilter) categoryFilter.addEventListener("change", fetchComplaintsTable);
   if (statusFilter) statusFilter.addEventListener("change", fetchComplaintsTable);
+
+  if (typeof connectRealtimeSocket === "function") {
+    connectRealtimeSocket({
+      onEvent: (msg) => {
+        if (msg.type === "complaint_created" || msg.type === "complaint_updated" || msg.type === "notice_published") {
+          fetchDashboardData();
+          const p = msg.payload || {};
+          if (msg.type === "complaint_created") {
+            showAdminToast(`New Grievance: ${p.ticket_id || ""}`, `${p.category || ""} • ${p.title || ""}`);
+          } else if (msg.type === "complaint_updated") {
+            showAdminToast(`Updated: ${p.ticket_id || ""}`, `${p.status || ""}`);
+          }
+        }
+      },
+      onStatusChange: (connected) => {
+        const el = document.getElementById("adminLiveStatus");
+        if (el) {
+          el.innerHTML = connected
+            ? `<span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Live Sync`
+            : `<span style="width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span> Reconnecting...`;
+        }
+      },
+    });
+  }
+  if (!adminPollTimer) {
+    adminPollTimer = setInterval(fetchDashboardData, 20000);
+  }
+}
+
+function showAdminToast(title, message) {
+  const container = document.getElementById("toastAlertContainer");
+  if (!container) return;
+  const toast = document.createElement("div");
+  toast.style.cssText = "padding: 14px 18px; background: #0f172a; color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border: 1px solid #334155; max-width: 360px; pointer-events: auto; display: flex; align-items: flex-start; gap: 12px; transition: all 0.3s ease;";
+  toast.innerHTML = `
+    <div style="width: 32px; height: 32px; border-radius: 8px; background: #7c3aed; display: grid; place-items: center; flex-shrink: 0; color: #ffffff;">
+      <i class="fa-solid fa-bell"></i>
+    </div>
+    <div style="flex: 1;">
+      <h5 style="margin: 0 0 2px 0; font-size: 0.84rem; font-weight: 700;">${title}</h5>
+      <p style="margin: 0; font-size: 0.76rem; color: #cbd5e1; line-height: 1.35;">${message}</p>
+    </div>
+    <button onclick="this.parentElement.remove()" style="background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 1rem; padding: 0 4px;">&times;</button>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => toast.remove(), 300);
+  }, 5000);
 }
 
 if (document.readyState === "loading") {
@@ -114,63 +108,60 @@ async function fetchDashboardData() {
 
 // Fetch KPI Metrics
 async function fetchAnalytics() {
-  let data = {
-    total: rawComplaints.length,
-    pending: rawComplaints.filter(c => c.status === "Pending").length,
-    in_progress: rawComplaints.filter(c => c.status === "In Progress" || c.status === "Assigned").length,
-    resolved: rawComplaints.filter(c => c.status === "Resolved").length,
-    high_priority: rawComplaints.filter(c => c.priority === "High" || c.priority === "Critical").length
-  };
-
   try {
-    const res = await fetch(`${API_BASE}/complaints/analytics`);
-    if (res.ok) {
-      data = await res.json();
+    const res = await fetch(`${API_BASE}/complaints/analytics`, { credentials: "same-origin" });
+    if (res.status === 401) {
+      logout(true);
+      return;
     }
+    if (!res.ok) return;
+    const data = await res.json();
+    if (statTotal) statTotal.innerText = data.total ?? 0;
+    if (statPending) statPending.innerText = data.pending ?? 0;
+    if (statInProgress) statInProgress.innerText = data.in_progress ?? 0;
+    if (statResolved) statResolved.innerText = data.resolved ?? 0;
+    if (statHighPriority) statHighPriority.innerText = data.high_priority ?? 0;
   } catch (err) {}
-
-  if (statTotal) statTotal.innerText = data.total ?? rawComplaints.length;
-  if (statPending) statPending.innerText = data.pending ?? 0;
-  if (statInProgress) statInProgress.innerText = data.in_progress ?? 0;
-  if (statResolved) statResolved.innerText = data.resolved ?? 0;
-  if (statHighPriority) statHighPriority.innerText = data.high_priority ?? 0;
 }
 
 // Fetch and Filter Complaints Table
 async function fetchComplaintsTable() {
   const category = categoryFilter ? categoryFilter.value : "All";
   const status = statusFilter ? statusFilter.value : "All";
-  const search = searchInput ? searchInput.value.trim().toLowerCase() : "";
+  const search = searchInput ? searchInput.value.trim() : "";
 
-  let list = rawComplaints;
-
+  let list = [];
   try {
     let url = `${API_BASE}/complaints/?`;
     if (category && category !== "All") url += `category=${encodeURIComponent(category)}&`;
     if (status && status !== "All") url += `status=${encodeURIComponent(status)}&`;
     if (search) url += `search=${encodeURIComponent(search)}&`;
 
-    const res = await fetch(url);
-    if (res.ok) {
-      list = await res.json();
-      rawComplaints = list;
+    const res = await fetch(url, { credentials: "same-origin" });
+    if (res.status === 401) {
+      logout(true);
+      return;
     }
+    if (!res.ok) throw new Error("Failed to fetch complaints");
+    list = await res.json();
+    rawComplaints = list;
   } catch (err) {
-    // Local filter fallback
-    if (category && category !== "All") list = list.filter(c => c.category === category);
-    if (status && status !== "All") list = list.filter(c => c.status === status);
-    if (search) list = list.filter(c => (c.title || c.issue || "").toLowerCase().includes(search) || (c.student_name || "").toLowerCase().includes(search) || c.ticket_id.toLowerCase().includes(search));
+    if (complaintsTableBody) {
+      complaintsTableBody.innerHTML = `<tr><td colspan="9" class="text-center py-10 text-rose-500">Unable to sync grievance registry from server.</td></tr>`;
+    }
+    return;
   }
 
-  if (ticketCountLabel) ticketCountLabel.innerText = `Showing ${list.length} complaint record(s)`;
+  const tr = (k, fb) => (typeof t === "function" ? (t(k) || fb) : fb);
+  if (ticketCountLabel) ticketCountLabel.innerText = `${tr("dept_showing_prefix", "Showing")} ${list.length} ${tr("adm_showing_rec", "complaint record(s)")}`;
   if (!complaintsTableBody) return;
 
   if (list.length === 0) {
     complaintsTableBody.innerHTML = `
       <tr>
-        <td colspan="8" class="text-center py-10 text-slate-400">
+        <td colspan="9" class="text-center py-10 text-slate-400">
           <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-300 block"></i>
-          No complaints found matching the criteria.
+          ${tr("adm_no_match", "No complaints found matching the criteria.")}
         </td>
       </tr>
     `;
@@ -180,32 +171,36 @@ async function fetchComplaintsTable() {
   complaintsTableBody.innerHTML = list.map(c => `
     <tr class="hover:bg-slate-50 transition border-b border-slate-100">
       <td class="py-3 px-4 font-mono font-bold text-blue-700">${c.ticket_id}</td>
+      <td class="py-3 px-4 font-medium text-slate-700">
+        <div>${c.student_name || tr("enrolled_student", "Enrolled Student")}</div>
+        <span class="text-[10px] text-slate-400 font-mono">${c.student_id || ''}</span>
+      </td>
       <td class="py-3 px-4">
-        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">${c.category}</span>
+        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">${(typeof tCategory === "function") ? tCategory(c.category) : c.category}</span>
       </td>
       <td class="py-3 px-4 max-w-xs font-medium text-slate-800" title="${c.issue}">
         <p class="truncate font-bold">${c.title || c.issue}</p>
-        <span class="text-[10px] text-slate-400 font-normal">Student: ${c.student_name || 'Enrolled Student'} (${formatDate(c.created_at)})</span>
+        <span class="text-[10px] text-slate-400 font-normal">${formatDate(c.created_at)}</span>
       </td>
       <td class="py-3 px-4 text-slate-600 font-medium">
         <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>${c.location}
       </td>
       <td class="py-3 px-4">
         <div class="flex items-center space-x-1">
-          <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${getPriorityBadge(c.priority)}">${c.priority}</span>
-          <span class="text-[10px] text-slate-400">(${c.sentiment || 'Neutral'})</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${getPriorityBadge(c.priority)}">${c.urgency_score || 50}/100 (${(typeof tPriority === "function") ? tPriority(c.priority) : c.priority})</span>
+          <span class="text-[10px] text-slate-400">(${(typeof tSentiment === "function") ? tSentiment(c.sentiment || 'Neutral') : (c.sentiment || 'Neutral')})</span>
         </div>
       </td>
       <td class="py-3 px-4">
-        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${getStatusBadge(c.status)}">${c.status}</span>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${getStatusBadge(c.status)}">${(typeof tStatus === "function") ? tStatus(c.status) : c.status}</span>
       </td>
       <td class="py-3 px-4 text-slate-600 font-medium text-[11px]">
-        ${c.assigned_technician || '<span class="text-slate-400 italic">Unassigned</span>'}
+        ${c.assigned_technician || `<span class="text-slate-400 italic">${tr("dept_unassigned", "Unassigned")}</span>`}
       </td>
       <td class="py-3 px-4 text-right">
-        <button onclick="openStatusModal('${c.ticket_id}', '${c.status}', '${escapeQuotes(c.assigned_technician || '')}', '${escapeQuotes(c.admin_notes || '')}')" 
+        <button type="button" onclick="openStatusModal('${c.ticket_id}')" 
           class="px-3 py-1 bg-white hover:bg-blue-50 hover:text-blue-700 text-slate-700 rounded-lg text-xs font-bold border border-slate-200 transition shadow-sm">
-          Assign / Update
+          ${tr("dept_btn_assign", "Assign / Update")}
         </button>
       </td>
     </tr>
@@ -213,11 +208,29 @@ async function fetchComplaintsTable() {
 }
 
 // Update Status Modal
-window.openStatusModal = function(ticketId, currentStatus, technician, notes) {
+window.openStatusModal = function(ticketId) {
+  const c = rawComplaints.find(x => x.ticket_id === ticketId);
+  const currentStatus = c ? c.status : "Pending";
+  const technician = c ? (c.assigned_technician || "") : "";
+  const notes = c ? (c.admin_notes || "") : "";
+
   modalTicketId.value = ticketId;
-  modalStatusSelect.value = currentStatus;
-  modalTechnicianInput.value = technician || "";
-  modalNotesText.value = notes || "";
+  modalStatusSelect.value = Array.from(modalStatusSelect.options).some(o => o.value === currentStatus) ? currentStatus : "Pending";
+  modalTechnicianInput.value = technician;
+  modalNotesText.value = notes;
+
+  const photoWrap = document.getElementById("modalStatusPhotoWrap");
+  const photoImg = document.getElementById("modalStatusPhoto");
+  if (photoWrap && photoImg) {
+    if (c && c.image_url) {
+      photoImg.src = c.image_url;
+      photoWrap.classList.remove("hidden");
+    } else {
+      photoImg.src = "";
+      photoWrap.classList.add("hidden");
+    }
+  }
+
   statusModal.classList.remove("hidden");
 };
 
@@ -230,10 +243,13 @@ window.submitStatusUpdate = async function() {
   const newStatus = modalStatusSelect.value;
   const technician = modalTechnicianInput.value.trim();
   const notes = modalNotesText.value.trim();
+  const tr = (k, fb) => (typeof t === "function" ? (t(k) || fb) : fb);
+  const statusDisp = (typeof tStatus === "function") ? tStatus(newStatus) : newStatus;
 
   try {
     const res = await fetch(`${API_BASE}/complaints/${ticketId}/status`, {
       method: "PATCH",
+      credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         status: newStatus,
@@ -241,29 +257,21 @@ window.submitStatusUpdate = async function() {
         admin_notes: notes
       })
     });
-    if (res.ok) {
-      closeModal();
-      fetchDashboardData();
+    if (res.status === 401) {
+      logout(true);
       return;
     }
-  } catch (err) {}
-
-  // Local update fallback
-  rawComplaints = rawComplaints.map(c => {
-    if (c.ticket_id === ticketId) {
-      return {
-        ...c,
-        status: newStatus,
-        assigned_technician: technician || c.assigned_technician,
-        admin_notes: notes || c.admin_notes
-      };
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      alert(errData.detail || `${tr("adm_ticket_failed", "Failed to update ticket")} ${ticketId}.`);
+      return;
     }
-    return c;
-  });
-
-  closeModal();
-  fetchDashboardData();
-  alert(`✅ Ticket ${ticketId} status updated to '${newStatus}'!`);
+    closeModal();
+    await fetchDashboardData();
+    alert(`✅ ${tr("adm_ticket_updated", "Ticket status updated to")} ${ticketId} -> '${statusDisp}'!`);
+  } catch (err) {
+    alert(`${tr("adm_ticket_failed", "Failed to update ticket")} ${ticketId}. Please check server connection.`);
+  }
 };
 
 // Notice Publisher Modal
@@ -275,17 +283,44 @@ window.closeNoticeModal = function() {
   noticeModal.classList.add("hidden");
 };
 
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = () => reject(new Error("Failed to read file"));
+    reader.readAsDataURL(file);
+  });
+}
+
 window.handlePublishNotice = async function(e) {
   e.preventDefault();
+  const tr = (k, fb) => (typeof t === "function" ? (t(k) || fb) : fb);
   const title = document.getElementById("noticeTitleInput").value.trim();
   const category = document.getElementById("noticeCatSelect").value;
   const deadline = document.getElementById("noticeDeadlineInput").value.trim();
   const department = document.getElementById("noticeDeptInput").value.trim();
   const content = document.getElementById("noticeContentInput").value.trim();
+  const fileEl = document.getElementById("noticeAttachmentInput");
+  const attachedFile = (fileEl && fileEl.files && fileEl.files[0]) ? fileEl.files[0] : null;
+
+  let attachment_data = null;
+  let attachment_mime = null;
+  let pdf_filename = `${title.replace(/\s+/g, '_')}.pdf`;
+
+  if (attachedFile) {
+    if (attachedFile.size > 4 * 1024 * 1024) {
+      alert("Circular attachment must be 4 MB or smaller.");
+      return;
+    }
+    attachment_data = await readFileAsDataUrl(attachedFile);
+    attachment_mime = attachedFile.type || "application/pdf";
+    pdf_filename = attachedFile.name;
+  }
 
   try {
-    await fetch(`${API_BASE}/notices/`, {
+    const res = await fetch(`${API_BASE}/notices/`, {
       method: "POST",
+      credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: title,
@@ -293,48 +328,33 @@ window.handlePublishNotice = async function(e) {
         deadline_date: deadline,
         department: department,
         content: content,
-        pdf_filename: `${title.replace(/\s+/g, '_')}.pdf`,
+        pdf_filename: pdf_filename,
+        attachment_data: attachment_data,
+        attachment_mime: attachment_mime,
         is_pinned: false
       })
     });
-  } catch (err) {}
+    if (res.status === 401) {
+      logout(true);
+      return;
+    }
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      alert(errData.detail || tr("adm_pub_failed", "Failed to publish circular."));
+      return;
+    }
+  } catch (err) {
+    alert(tr("adm_pub_failed", "Failed to publish circular."));
+    return;
+  }
 
-  alert(`📢 Official Circular '${title}' published successfully!`);
+  alert(`📢 '${title}' — ${tr("adm_pub_success", "Official Circular published successfully!")}`);
   closeNoticeModal();
   document.getElementById("publishNoticeForm").reset();
 };
 
-window.seedDemoData = async function() {
-  try {
-    const res = await fetch(`${API_BASE}/complaints/seed`, { method: "POST" });
-    if (res.ok) {
-      alert("✅ Sample grievance records re-seeded successfully!");
-      fetchDashboardData();
-      return;
-    }
-  } catch (err) {}
-  alert("Sample grievance records refreshed.");
-  fetchDashboardData();
-};
-
 window.exportComplaintsCSV = function() {
-  if (window.location.protocol !== "file:") {
-    window.location.href = `${API_BASE}/complaints/export/csv`;
-    return;
-  }
-
-  // Local CSV export
-  let csv = "Ticket ID,Category,Title,Location,Priority,Status,Technician\n";
-  rawComplaints.forEach(c => {
-    csv += `"${c.ticket_id}","${c.category}","${c.title || c.issue}","${c.location}","${c.priority}","${c.status}","${c.assigned_technician || 'None'}"\n`;
-  });
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `CampusVoice_Complaints_${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
+  window.location.href = `${API_BASE}/complaints/export/csv`;
 };
 
 function getStatusBadge(status) {
@@ -351,9 +371,10 @@ function getPriorityBadge(priority) {
 }
 
 function formatDate(dateStr) {
+  if (typeof formatLocalDate === "function") return formatLocalDate(dateStr);
   if (!dateStr) return "Recent";
   const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleDateString("en-IN", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 function escapeQuotes(str) {

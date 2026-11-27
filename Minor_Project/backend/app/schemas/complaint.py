@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 from typing import Optional, List, Any
-from datetime import datetime
+from datetime import datetime, timezone
 
 class TimelineEvent(BaseModel):
     title: str
@@ -11,9 +11,10 @@ class TimelineEvent(BaseModel):
 class UserInputRequest(BaseModel):
     query: str = Field(..., description="The spoken or typed natural language query from student")
     language: Optional[str] = Field("en", description="en, hi, or bn")
-    student_id: Optional[str] = Field("STU-2023-01", description="Student roll or enrollment ID")
-    student_name: Optional[str] = Field("Rahul Sharma", description="Student's full name")
-    student_department: Optional[str] = Field("Computer Science & Engineering", description="Student's department")
+    student_id: Optional[str] = Field(None, description="Student roll or enrollment ID")
+    student_name: Optional[str] = Field(None, description="Student's full name")
+    student_department: Optional[str] = Field(None, description="Student's department")
+    dry_run: bool = Field(False, description="When true, analyze intent/entities without creating a ticket")
 
 class ExtractedEntities(BaseModel):
     intent: str = Field("unknown", description="register_complaint | check_status | campus_inquiry | emergency | notice_inquiry | chitchat")
@@ -40,10 +41,10 @@ class ComplaintBase(BaseModel):
 class ComplaintCreate(ComplaintBase):
     title: Optional[str] = None
     raw_query: str
-    student_id: Optional[str] = "STU-2023-01"
-    student_name: Optional[str] = "Rahul Sharma"
-    student_department: Optional[str] = "Computer Science & Engineering"
-    student_contact: Optional[str] = "+91 98765 43210"
+    student_id: Optional[str] = None
+    student_name: Optional[str] = None
+    student_department: Optional[str] = None
+    student_contact: Optional[str] = None
     image_url: Optional[str] = None
     sentiment: Optional[str] = "Neutral"
     urgency_score: Optional[int] = 50
@@ -72,6 +73,12 @@ class ComplaintOut(ComplaintBase):
     timeline: Optional[List[TimelineEvent]] = None
     created_at: datetime
     updated_at: datetime
+
+    @field_serializer("created_at", "updated_at")
+    def _serialize_dt(self, dt: datetime) -> str:
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
 
     class Config:
         from_attributes = True
