@@ -6,7 +6,7 @@ set "PATH=C:\Users\SHREYA GHOSHAL\AppData\Local\Microsoft\WinGet\Packages\Git.Mi
 echo ===================================================
 echo   CampusVoice - Push Codebase to GitHub
 echo ===================================================
-echo Target Remote: https://github.com/pinaki-bit/Campus_Voice.git
+echo Target Remote: https://github.com/Shreya77-beep/Cmpus_Voice-Minor-Project.git
 echo Current Branch: main
 echo.
 
@@ -26,7 +26,7 @@ if %ERRORLEVEL% NEQ 0 (
     echo ---------------------------------------------------
     set /p GITHUB_TOKEN="Enter GitHub Personal Access Token (or press Enter to exit): "
     if not "!GITHUB_TOKEN!"=="" (
-        git push -u https://!GITHUB_TOKEN!@github.com/pinaki-bit/Campus_Voice.git main
+        git push -u https://!GITHUB_TOKEN!@github.com/Shreya77-beep/Cmpus_Voice-Minor-Project.git main
     )
 )
 
