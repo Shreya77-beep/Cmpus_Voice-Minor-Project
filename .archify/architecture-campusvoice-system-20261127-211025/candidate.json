@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "CampusVoice Real-Time System Architecture",
+    "locale": "en",
+    "output": ".archify/architecture-campusvoice-system-20261127-211025/campusvoice-system.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Shreya77-beep/Cmpus_Voice-Minor-Project.git",
+      "provider": "github",
+      "link_mode": "local-only",
+      "revision": "b02b09ffc86705eb44f301fde2e996dbb229cfc5"
+    },
+    "views": [
+      {
+        "id": "grievance-flow",
+        "label": "Voice & AI Triage Flow",
+        "focus": ["users", "frontend", "api", "nlp", "gemini", "faqs", "db"],
+        "note": "Requests flow from browser or LAN QR to FastAPI, Hybrid NLP/RAG triage, and SQLite."
+      },
+      {
+        "id": "realtime-sync",
+        "label": "Real-Time WebSocket Push",
+        "focus": ["frontend", "realtime", "auth", "api"],
+        "note": "Sync API handlers publish scoped events via RealtimeHub to authenticated WS clients."
+      },
+      {
+        "id": "security-rbac",
+        "label": "Auth & Role Isolation",
+        "focus": ["auth", "api", "realtime", "db"],
+        "note": "PBKDF2 hashes and HMAC cv_session cookies isolate student, department, and admin data."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "users",
+      "type": "external",
+      "label": "Campus Users",
+      "sublabel": "Browser & Phone QR",
+      "pos": [25, 265],
+      "size": [130, 68],
+      "sources": [
+        { "path": "Minor_Project/backend/app/api/endpoints/qr.py", "line": 31, "end_line": 97, "label": "QR generator & LAN IP info" }
+      ]
+    },
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "Role Portals",
+      "sublabel": "HTML5 JS EN/HI/BN",
+      "tag": "Speech + UI",
+      "pos": [285, 265],
+      "size": [175, 72],
+      "sources": [
+        { "path": "Minor_Project/frontend/index.html", "line": 16, "end_line": 180, "label": "Landing gateway & triage" },
+        { "path": "Minor_Project/frontend/app.js", "line": 440, "end_line": 530, "label": "Web Speech & live UI" },
+        { "path": "Minor_Project/frontend/i18n.js", "line": 1, "end_line": 30, "label": "EN/HI/BN dictionary" }
+      ]
+    },
+    {
+      "id": "realtime",
+      "type": "messagebus",
+      "label": "RealtimeHub WS",
+      "sublabel": "/api/ws/events",
+      "tag": "Role Push",
+      "pos": [285, 70],
+      "size": [175, 72],
+      "sources": [
+        { "path": "Minor_Project/backend/app/core/realtime.py", "line": 8, "end_line": 96, "label": "RealtimeHub pub/sub router" },
+        { "path": "Minor_Project/backend/app/api/endpoints/ws.py", "line": 13, "end_line": 55, "label": "Authenticated WS endpoint" }
+      ]
+    },
+    {
+      "id": "auth",
+      "type": "security",
+      "label": "Auth & RBAC",
+      "sublabel": "PBKDF2 + cv_session",
+      "tag": "HMAC-SHA256",
+      "pos": [615, 70],
+      "size": [175, 72],
+      "sources": [
+        { "path": "Minor_Project/backend/app/core/security.py", "line": 40, "end_line": 151, "label": "PBKDF2 & HMAC tokens" },
+        { "path": "Minor_Project/backend/app/api/endpoints/auth.py", "line": 33, "end_line": 85, "label": "HttpOnly cookie auth" }
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "FastAPI Server",
+      "sublabel": "uvicorn 0.0.0.0:8000",
+      "tag": "REST + PDF/CSV",
+      "pos": [615, 265],
+      "size": [175, 72],
+      "sources": [
+        { "path": "Minor_Project/backend/app/main.py", "line": 40, "end_line": 115, "label": "FastAPI app & routers" },
+        { "path": "Minor_Project/backend/app/api/endpoints/complaints.py", "line": 12, "end_line": 134, "label": "Role-scoped complaint API" },
+        { "path": "Minor_Project/run_server.py", "line": 34, "end_line": 42, "label": "Uvicorn 0.0.0.0 launcher" }
+      ]
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "SQLite WAL DB",
+      "sublabel": "campus_voice.db",
+      "tag": "SQLAlchemy",
+      "pos": [950, 265],
+      "size": [175, 72],
+      "sources": [
+        { "path": "Minor_Project/backend/app/core/database.py", "line": 5, "end_line": 27, "label": "SQLite WAL engine" },
+        { "path": "Minor_Project/backend/app/models/complaint.py", "line": 19, "end_line": 51, "label": "Complaint ORM model" }
+      ]
+    },
+    {
+      "id": "nlp",
+      "type": "backend",
+      "label": "NLP & Notice RAG",
+      "sublabel": "Urgency + FAQ + PDF",
+      "tag": "0-100 Score",
+      "pos": [615, 450],
+      "size": [175, 72],
+      "sources": [
+        { "path": "Minor_Project/backend/app/services/nlp_service.py", "line": 12, "end_line": 100, "label": "Hybrid NLP pipeline" },
+        { "path": "Minor_Project/backend/app/services/notice_service.py", "line": 23, "end_line": 100, "label": "Notice CRUD & PDF" }
+      ]
+    },
+    {
+      "id": "gemini",
+      "type": "cloud",
+      "label": "Gemini 2.5 Flash",
+      "sublabel": "Optional LLM REST",
+      "pos": [25, 450],
+      "size": [175, 68],
+      "sources": [
+        { "path": "Minor_Project/backend/app/services/nlp_service.py", "line": 38, "end_line": 82, "label": "Gemini JSON extraction" }
+      ]
+    },
+    {
+      "id": "faqs",
+      "type": "database",
+      "label": "Handbook JSON",
+      "sublabel": "campus_faq.json",
+      "pos": [950, 450],
+      "size": [175, 68],
+      "sources": [
+        { "path": "Minor_Project/backend/app/services/knowledge_service.py", "line": 6, "end_line": 75, "label": "Multilingual FAQ lookup" }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "CampusVoice App Host (FastAPI + Static Frontend)",
+      "wraps": ["frontend", "realtime", "auth", "api", "db", "nlp", "faqs"]
+    },
+    {
+      "kind": "security-group",
+      "label": "cv_session Cookie Auth & Role Scoping",
+      "wraps": ["realtime", "auth", "api"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "users-to-portal",
+      "from": "users",
+      "to": "frontend",
+      "label": "HTTP / LAN QR",
+      "variant": "emphasis"
+    },
+    {
+      "id": "frontend-to-api",
+      "from": "frontend",
+      "to": "api",
+      "label": "REST + Cookie",
+      "variant": "emphasis"
+    },
+    {
+      "id": "realtime-to-frontend",
+      "from": "realtime",
+      "to": "frontend",
+      "label": "WS /api/ws/events",
+      "variant": "emphasis"
+    },
+    {
+      "id": "realtime-verify-auth",
+      "from": "realtime",
+      "to": "auth",
+      "label": "verify WS cookie",
+      "variant": "security"
+    },
+    {
+      "id": "api-verify-auth",
+      "from": "api",
+      "to": "auth",
+      "label": "PBKDF2 & RBAC",
+      "variant": "security"
+    },
+    {
+      "id": "api-publish-realtime",
+      "from": "api",
+      "to": "realtime",
+      "label": "publish_sync",
+      "variant": "dashed"
+    },
+    {
+      "id": "api-to-db",
+      "from": "api",
+      "to": "db",
+      "label": "SQLAlchemy WAL"
+    },
+    {
+      "id": "api-to-nlp",
+      "from": "api",
+      "to": "nlp",
+      "label": "Triage & PDF"
+    },
+    {
+      "id": "nlp-to-gemini",
+      "from": "nlp",
+      "to": "gemini",
+      "label": "Optional LLM API",
+      "variant": "dashed"
+    },
+    {
+      "id": "nlp-to-faqs",
+      "from": "nlp",
+      "to": "faqs",
+      "label": "FAQ keyword match"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Role-Isolated Portals",
+      "items": [
+        "Gateway (/), Student (/student), Department (/department), and Admin (/admin) served from FastAPI",
+        "Supports English, Hindi, and Bengali UI (425 keys in i18n.js) plus Web Speech STT and TTS",
+        "Dynamic PNG QR Standee (/api/qr/code) detects LAN IP for mobile onboarding over 0.0.0.0:8000"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Real-Time Event & AI Pipeline",
+      "items": [
+        "RealtimeHub pushes scoped WebSocket events from sync API routes via run_coroutine_threadsafe",
+        "HybridNLPService uses optional Gemini 2.5 Flash or local multilingual rules for 0-100 urgency scoring",
+        "NoticeService generates downloadable PDF 1.4 circulars and broadcasts alerts to all students"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Security & Persistence",
+      "items": [
+        "Passwords salted and hashed via PBKDF2-HMAC-SHA256 (100,000 iterations) in auth_service.py",
+        "HttpOnly SameSite=Lax HMAC-SHA256 cv_session cookie isolates student complaints and locks dept queues",
+        "SQLite runs in WAL mode with 5000ms busy timeout storing Users, Complaints, Notices, and Notifications"
+      ]
+    }
+  ]
+}

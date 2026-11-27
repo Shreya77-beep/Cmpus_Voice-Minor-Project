@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "2b613dcd-6847-4818-8b0f-ed32a256e4b7",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\pinak\\Desktop\\campus_voice\\Cmpus_Voice-Minor-Project\\.archify\\architecture-campusvoice-system-20261127-211025\\candidate.json",
+  "output": "C:\\Users\\pinak\\Desktop\\campus_voice\\Cmpus_Voice-Minor-Project\\.archify\\architecture-campusvoice-system-20261127-211025\\campusvoice-system.html",
+  "specification": {
+    "sha256": "895f0049b2c10e788fff7babb9b6bf26bebf3dfb7a23ab3b859f75de0c36ba27",
+    "bytes": 8605
+  },
+  "artifact": {
+    "sha256": "9fe123e9d0372881d8d8ab88f55e2a86b2dc59e3e61712f6b7d6f27f1785d44c",
+    "bytes": 770089
+  }
+}
